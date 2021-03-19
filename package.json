@@ -1,0 +1,13 @@
+{
+  "name": "project-boiler",
+  "bin": {
+    "project-boiler": "bin/project-boiler.js"
+  },
+  "version": "1.0.0",
+  "author": "SoundOfTheSky",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "inquirer": "^8.0.0"
+  }
+}
