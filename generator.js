@@ -94,6 +94,7 @@ module.exports = async function (options) {
       if (!(await exists(directory))) await createFile(directory);
     }
     directory += '/';
+    console.log('Thinking how to format your project...');
     if (options.features.includes('🎀 ESLint + Prettier')) {
       ['eslint', 'prettier', 'eslint-plugin-prettier', 'eslint-config-prettier'].forEach(el => devDeps.add(el));
       await createFile(
@@ -153,10 +154,45 @@ module.exports = async function (options) {
       eslintConfig.extends.push('plugin:prettier/recommended');
       await createFile(directory + '.eslintrc.js', 'module.exports = ' + prettyJSON(eslintConfig, true));
     }
+    if (options.transpiler === '🔧 TypeScript') {
+      console.log('Adding TypeScript to the mix...');
+      ['typescript'].forEach(el => devDeps.add(el));
+      await createFile(
+        directory + '.tsconfig.json',
+        prettyJSON({
+          compilerOptions: {
+            target: 'ES6',
+            module: 'ESNext',
+            lib: ['dom', 'dom.iterable', 'esnext'],
+            allowJs: true,
+            skipLibCheck: true,
+            esModuleInterop: true,
+            allowSyntheticDefaultImports: true,
+            strict: true,
+            forceConsistentCasingInFileNames: true,
+            moduleResolution: 'node',
+            resolveJsonModule: true,
+            importHelpers: true,
+            sourceMap: true,
+            paths: {
+              '@/*': ['src/*'],
+            },
+            ...(options.framework === '💙 React' && { jsx: 'react-jsx' }),
+            ...(options.framework === '💚 Vue' && { jsx: 'preserve' }),
+          },
+          include: ['src'],
+        }),
+      );
+    }
+    console.log('Creating .gitignore...');
+    await createFile(directory + '.gitignore', await fs.readFile(filesDirectory + 'gitignore', 'utf8'));
+    console.log('Package.json magically appears...');
     await createFile(directory + 'package.json', prettyJSON(packageJSON));
+    console.log('200,000 npm packages are ready, with million more well on the way...');
     execSync('yarn add -D ' + Array.from(devDeps).join(' '), {
       cwd: directory.substring(0, directory.length - 1),
     });
+    console.log('Ready!');
   } catch (e) {
     console.error(e);
   }
