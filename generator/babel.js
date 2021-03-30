@@ -1,4 +1,5 @@
 const Utils = require('./utils');
+const Path = require('path');
 module.exports = async (options, deps, devDeps, directory) => {
   if (!options.transpilers.includes('babel')) return;
   const babelConfig = {
@@ -20,14 +21,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     babelConfig.presets.push('@babel/preset-react');
   }
   return Utils.createPath(
-    directory + '.babel.config.js',
-    'module.exports = ' +
-      Utils.prettyJSON(
-        {
-          presets: [],
-          plugins: [],
-        },
-        true,
-      ),
+    Path.join(directory, '.babel.config.js'),
+    'module.exports = ' + Utils.prettyJSON(babelConfig, true),
   );
 };

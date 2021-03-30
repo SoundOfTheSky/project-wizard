@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "ESNext",
+    "module": "esnext",
+    "outDir": "./dist",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,14 +18,22 @@
     "resolveJsonModule": true,
     "importHelpers": true,
     "sourceMap": true,
+    "removeComments": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noEmit": true
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

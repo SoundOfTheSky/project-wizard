@@ -1,7 +1,8 @@
 const Utils = require('./utils');
+const Path = require('path');
 module.exports = async (options, deps, devDeps, directory) => {
   if (options.transpilers.includes('typescript')) {
-    devDeps.push('typescript');
+    devDeps.add('typescript');
     const tsconfig = {
       compilerOptions: {
         // JS specification of output files
@@ -55,10 +56,10 @@ module.exports = async (options, deps, devDeps, directory) => {
       // Don't emit; allow Babel to transform files.
       tsconfig.compilerOptions.noEmit = true;
     }
-    await Utils.createPath(directory + '.tsconfig.json', Utils.prettyJSON(tsconfig));
+    await Utils.createPath(Path.join(directory, '.tsconfig.json'), Utils.prettyJSON(tsconfig));
   } else
     await Utils.createPath(
-      directory + '.jsconfig.json',
+      Path.join(directory, '.jsconfig.json'),
       Utils.prettyJSON({
         compilerOptions: {
           target: 'es6',

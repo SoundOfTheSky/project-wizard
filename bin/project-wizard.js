@@ -25,8 +25,8 @@ async function create() {
       message: 'Select environment:',
       choices: [
         { name: '📰 Browser', value: 'browser' },
-        { name: '🟢 Node.js', value: 'node' },
-        { name: '💻 Electron', value: 'electron' },
+        { name: '🟢 Node.js (not ready)', value: 'node' },
+        { name: '💻 Electron (not ready)', value: 'electron' },
       ],
     },
     {
@@ -36,9 +36,9 @@ async function create() {
       choices: [
         { name: '❌ None', value: 'none' },
         { name: '💙 React', value: 'react' },
-        { name: '💚 Vue', value: 'vue' },
-        { name: '💖 Angular', value: 'angular' },
-        { name: '🧡 Svelte', value: 'svelte' },
+        { name: '💚 Vue (not ready)', value: 'vue' },
+        { name: '💖 Angular (not ready)', value: 'angular' },
+        { name: '🧡 Svelte (not ready)', value: 'svelte' },
       ],
     },
     {
@@ -55,10 +55,10 @@ async function create() {
       type: 'checkbox',
       message: 'Check the features:',
       choices: [
-        { name: '💼 Redux', value: 'redux' },
-        { name: '🚀 Router', value: 'router' },
+        { name: '💼 Redux (not ready)', value: 'redux' },
+        { name: '🚀 Router (not ready)', value: 'router' },
         { name: '✨ SCSS', value: 'scss' },
-        { name: '🃏 Jest', value: 'jest' },
+        { name: '🃏 Jest (not ready)', value: 'jest' },
         { name: '🎨 ESLint', value: 'eslint' },
         { name: '🎀 Prettier', value: 'prettier' },
       ],
@@ -69,7 +69,7 @@ async function create() {
       type: 'checkbox',
       message: 'Check the features needed for your project:',
       choices: [
-        { name: '🃏 Jest', value: 'jest' },
+        { name: '🃏 Jest (not ready)', value: 'jest' },
         { name: '🎀 ESLint', value: 'eslint' },
       ],
       when: ({ UIFramework }) => UIFramework === 'none',

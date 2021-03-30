@@ -1,12 +1,10 @@
 module.exports = {
-  extends: [
-    "plugin:prettier/recommended"
-  ],
+  extends: ['plugin:prettier/recommended'],
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: "module"
+    sourceType: 'module',
   },
   rules: {
-    "prettier/prettier": 1
-  }
-}
+    'prettier/prettier': 1,
+  },
+};

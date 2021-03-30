@@ -1,8 +1,10 @@
 const Utils = require('./utils');
+const Path = require('path');
 module.exports = async (options, deps, devDeps, directory) => {
   if (!options.features.includes('eslint')) return;
   devDeps.add('eslint');
   const eslintConfig = {
+    root: true,
     extends: [],
     parserOptions: {
       ecmaVersion: 2020,
@@ -19,7 +21,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     ['@typescript-eslint/parser', '@typescript-eslint/eslint-plugin'].forEach(el => devDeps.add(el));
     eslintConfig.parser = '@typescript-eslint/parser';
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
-    if (prettierEnabled) eslintConfig.extends.push('prettier/@typescript-eslint');
+    if (prettierEnabled) eslintConfig.extends.push('prettier');
   }
   // Not actually sure that using babel parser is good thing
   /*if (options.transpiler.includes('babel')) {
@@ -47,5 +49,8 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.parser = 'vue-eslint-parser';
   }
   if (prettierEnabled) eslintConfig.extends.push('plugin:prettier/recommended');
-  await Utils.createPath(directory + '.eslintrc.js', 'module.exports = ' + Utils.prettyJSON(eslintConfig, true));
+  await Utils.createPath(
+    Path.join(directory, '.eslintrc.js'),
+    'module.exports = ' + Utils.prettyJSON(eslintConfig, true),
+  );
 };

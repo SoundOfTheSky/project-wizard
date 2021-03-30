@@ -1,9 +1,10 @@
 const Utils = require('./utils');
+const Path = require('path');
 module.exports = async (options, deps, devDeps, directory) => {
   if (!options.features.includes('prettier')) return;
   devDeps.add('prettier');
   return Utils.createPath(
-    directory + '.prettierrc.js',
+    Path.join(directory, '.prettierrc.js'),
     'module.exports = ' +
       Utils.prettyJSON(
         {

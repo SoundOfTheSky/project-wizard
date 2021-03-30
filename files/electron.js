@@ -26,5 +26,5 @@ function createWindow(file, p = {}) {
   return win;
 }
 app.whenReady().then(async () => {
-  createWindow('./index.html', {title:'Electron App'});
+  createWindow('./index.html', { title: 'Electron App' });
 });
