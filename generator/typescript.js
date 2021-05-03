@@ -56,10 +56,10 @@ module.exports = async (options, deps, devDeps, directory) => {
       // Don't emit; allow Babel to transform files.
       tsconfig.compilerOptions.noEmit = true;
     }
-    await Utils.createPath(Path.join(directory, '.tsconfig.json'), Utils.prettyJSON(tsconfig));
+    await Utils.createPath(Path.join(directory, 'tsconfig.json'), Utils.prettyJSON(tsconfig));
   } else
     await Utils.createPath(
-      Path.join(directory, '.jsconfig.json'),
+      Path.join(directory, 'jsconfig.json'),
       Utils.prettyJSON({
         compilerOptions: {
           target: 'es6',

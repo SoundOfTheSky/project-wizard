@@ -23,7 +23,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
   }
-  // Not actually sure that using babel parser is good thing
+  // Not actually sure that using babel parser is a good thing
   /*if (options.transpiler.includes('babel')) {
     ['@babel/eslint-parser', '@babel/eslint-plugin'].forEach(el => devDeps.add(el));
     eslintConfig.parser = '@babel/eslint-parser';

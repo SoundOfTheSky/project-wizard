@@ -15,6 +15,58 @@ module.exports = async (options, deps, devDeps, directory) => {
   let inner =
     `const isProd=webpackEnv === 'production';\n` +
     `const isProdProfile = isProd && process.argv.includes('--profile');\n`;
+  const cssModules = [
+    `!js:isProd?{
+      loader: MiniCssExtractPlugin.loader,
+      options: paths.publicUrlOrPath.startsWith('.') ? { publicPath: '../../' }: {},
+    }:require.resolve('style-loader'),`,
+    {
+      loader: `!js:require.resolve('css-loader')`,
+      options: {
+        importLoaders: 1,
+        sourceMap: true,
+      },
+    },
+    {
+      // PostCSS
+      loader: `!js:require.resolve('postcss-loader')`,
+      options: {
+        // Necessary for external CSS imports to work
+        ident: 'postcss',
+        plugins: () => [
+          // idk
+          `!js:require('postcss-flexbugs-fixes')`,
+          // idk
+          `!js:require('postcss-preset-env')({
+            autoprefixer: {
+              flexbox: 'no-2009',
+            },
+            stage: 3,
+          })`,
+          // Default css
+          `!js:require('postcss-normalize')()`,
+        ],
+        sourceMap: true,
+      },
+    },
+  ];
+  const scssModules = [
+    ...cssModules,
+    // Include all imports in scss files
+    {
+      loader: `!js:require.resolve('resolve-url-loader')`,
+      options: {
+        sourceMap: true,
+        root: './src',
+      },
+    },
+    {
+      loader: `!js:require.resolve(preProcessor)`,
+      options: {
+        sourceMap: true,
+      },
+    },
+  ];
   const config = {
     mode: `!js:isProd ? 'production' : 'development'`,
     // If production, don't try to build after first error
@@ -96,14 +148,14 @@ module.exports = async (options, deps, devDeps, directory) => {
       // Available importable extensions
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'].filter(el => typescriptEnabled || !el.includes('ts')),
       // Aliases for imports
-      //alias: {},
+      // alias: {},
     },
     module: {
       rules: [
         {
           // Selects only one loader. Last loader is fallback.
           oneOf: [
-            // If we are in browser, add url-loader. Import files right in code if size is below 8mb
+            // If we are in browser, add url-loader. Import files right in code if size is below 8kb
             options.environment === 'browser' && {
               test: `!js:[/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/]`,
               loader: `!js:require.resolve('url-loader')`,
@@ -120,8 +172,6 @@ module.exports = async (options, deps, devDeps, directory) => {
               options: {
                 // Directly show config
                 configFile: `!js:path.resolve(__dirname, 'babel.config.js')`,
-                // React hot reload
-                plugins: [`!js:require.resolve('react-refresh/babel')`],
                 // babel-loader cache for faster rebuilds
                 cacheDirectory: true,
                 // Dont compress cache to zip
@@ -129,17 +179,43 @@ module.exports = async (options, deps, devDeps, directory) => {
                 compact: `!js:isProd`,
               },
             },
-            // Css
+            // Process any JS outside of src directory
+            {
+              test: `!js:/\.(js|mjs)$/`,
+              exclude: `!js:/@babel(?:\/|\\{1,2})runtime/`,
+              loader: `!js:require.resolve('babel-loader')`,
+              options: {
+                babelrc: false,
+                configFile: false,
+                compact: false,
+                cacheDirectory: true,
+                cacheCompression: false,
+                // Allow debug of node_modules
+                sourceMaps: true,
+                inputSourceMap: true,
+              },
+            },
+            // CSS
             {
               test: `!js:/\.(scss|css)$/`,
-              use: [
-                `!js:isProd?{
-                  loader: MiniCssExtractPlugin.loader,
-                  options: paths.publicUrlOrPath.startsWith('.') ? { publicPath: '../../' }: {},
-                }:require.resolve('style-loader'),`,
-              ],
+              use: cssModules,
+              sideEffects: true,
             },
-          ],
+            // SCSS
+            options.features.includes('scss') && {
+              test: `!js:/\.(scss|sass)$/`,
+              use: scssModules,
+              sideEffects: true,
+            },
+            // File
+            {
+              loader: require.resolve('file-loader'),
+              exclude: `!js:[/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/]`,
+              options: {
+                name: 'static/media/[name].[hash:8].[ext]',
+              },
+            },
+          ].filter(Boolean),
         },
       ],
     },

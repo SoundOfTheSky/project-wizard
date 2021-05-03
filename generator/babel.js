@@ -18,7 +18,8 @@ module.exports = async (options, deps, devDeps, directory) => {
   }
   if (options.UIFramework === 'react') {
     devDeps.add('@babel/preset-react');
-    babelConfig.presets.push('@babel/preset-react');
+    devDeps.add('react-refresh/babel');
+    babelConfig.presets.push('@babel/preset-react', 'react-refresh/babel');
   }
   return Utils.createPath(
     Path.join(directory, '.babel.config.js'),

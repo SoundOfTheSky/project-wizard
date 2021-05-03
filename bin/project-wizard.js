@@ -26,7 +26,7 @@ async function create() {
       choices: [
         { name: '📰 Browser', value: 'browser' },
         { name: '🟢 Node.js (not ready)', value: 'node' },
-        { name: '💻 Electron (not ready)', value: 'electron' },
+        { name: '💻 Electron', value: 'electron' },
       ],
     },
     {
