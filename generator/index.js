@@ -22,7 +22,7 @@ module.exports = async function (options) {
     for (const name of ['prettier', 'eslint', 'babel', 'typescript'])
       await require('./' + name)(options, deps, devDeps, directory);
     await Utils.copyPath(Path.join(filesDirectory, 'gitignore'), Path.join(directory, '.gitignore'));
-    await Utils.execute('git', ['init'], { cwd: directory });
+    //await Utils.execute('git', ['init'], { cwd: directory });
     await Utils.createPath(Path.join(directory, 'package.json'), Utils.prettyJSON(packageJSON));
     log('📦  200,000 npm packages are ready, with million more well on the way...');
     await Utils.execute('yarn', ['add', '-D', ...Array.from(devDeps)], { cwd: directory });

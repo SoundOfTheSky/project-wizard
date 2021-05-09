@@ -18,11 +18,11 @@ module.exports = async (options, deps, devDeps, directory) => {
   }
   if (options.UIFramework === 'react') {
     devDeps.add('@babel/preset-react');
-    devDeps.add('react-refresh/babel');
+    devDeps.add('@pmmmwh/react-refresh-webpack-plugin');
     babelConfig.presets.push('@babel/preset-react', 'react-refresh/babel');
   }
   return Utils.createPath(
-    Path.join(directory, '.babel.config.js'),
+    Path.join(directory, 'babel.config.js'),
     'module.exports = ' + Utils.prettyJSON(babelConfig, true),
   );
 };

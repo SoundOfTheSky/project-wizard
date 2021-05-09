@@ -3,6 +3,9 @@
   "bin": {
     "project-wizard": "bin/project-wizard.js"
   },
+  "scripts": {
+    "start": "node bin/project-wizard"
+  },
   "version": "1.0.0",
   "author": "SoundOfTheSky",
   "license": "MIT",

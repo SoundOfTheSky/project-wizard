@@ -219,6 +219,45 @@ module.exports = async (options, deps, devDeps, directory) => {
         },
       ],
     },
+    plugins: [
+      // Import everything to index.html
+      `!js:new HtmlWebpackPlugin(
+        {
+          template: 'public/index.html',
+          minify: isProd?{
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
+          }:false,
+        },
+      )`,
+      // This is necessary to emit hot updates (CSS and Fast Refresh):
+      `!js:!isProd && new webpack.HotModuleReplacementPlugin()`,
+      // Experimental hot reloading for React .
+      `!js:!isProd && new ReactRefreshWebpackPlugin()`,
+      // Watcher doesn't work well if you mistype casing
+      `!js:!isProd&& new CaseSensitivePathsPlugin()`,
+      // Export css to static/css
+      `!js:!isProd&&
+        new MiniCssExtractPlugin({
+          filename: 'static/css/[name].[contenthash:8].css',
+          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+        })`,
+      !disableESLintPlugin &&
+        new ESLintPlugin({
+          // Plugin options
+          extensions: ['js', 'mjs', 'jsx', 'ts', 'tsx', 'vue'],
+          failOnError: !isProd,
+          context: '/',
+        }),
+    ].filter(Boolean),
   };
   if (options.environment === 'browser') {
     [
