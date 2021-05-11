@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
-const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
+const CSSMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const CaseSensitivePathsWebpackPlugin = require('case-sensitive-paths-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PostcssPresetEnv = require('postcss-preset-env');
-const PostcssNormalize = require('postcss-normalize');
+const PostCSSPresetEnv = require('postcss-preset-env');
+const PostCSSNormalize = require('postcss-normalize');
+const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = function (webpackEnv) {
   const isProd = webpackEnv === 'production';
@@ -15,7 +16,7 @@ module.exports = function (webpackEnv) {
     // Extract css to files in prod, or import style in DOM in development
     isProd
       ? {
-          loader: MiniCssExtractPlugin.loader,
+          loader: MiniCSSExtractPlugin.loader,
           options: {
             publicPath: '../../',
           },
@@ -36,14 +37,14 @@ module.exports = function (webpackEnv) {
         postcssOptions: {
           plugins: [
             // Make old browsers understand new css
-            PostcssPresetEnv({
+            PostCSSPresetEnv({
               autoprefixer: {
                 flexbox: 'no-2009',
               },
               stage: 3,
             }),
             // Default css
-            PostcssNormalize(),
+            PostCSSNormalize(),
           ],
         },
         sourceMap: true,
@@ -52,14 +53,6 @@ module.exports = function (webpackEnv) {
   ];
   const scssModules = [
     ...cssModules,
-    // Resolve imports in css by URL (for non relative)
-    {
-      loader: require.resolve('resolve-url-loader'),
-      options: {
-        sourceMap: true,
-        root: './src',
-      },
-    },
     {
       loader: require.resolve('sass-loader'),
       options: {
@@ -73,19 +66,17 @@ module.exports = function (webpackEnv) {
     bail: isProd,
     // Quality of source maps
     devtool: isProd ? 'source-map' : 'cheap-module-source-map',
-    // File at which build starts.
-    entry: './src/index',
     output: {
-      // the target directory for all output files. Must be an absolute path
-      path: path.resolve(__dirname, 'build'),
       // the filename template for entry chunks
-      filename: isProd ? 'static/js/[name].[contenthash:8].js' : 'static/js/[name].js',
+      filename: isProd ? 'js/[name].[contenthash:8].js' : 'js/[name].js',
       // There are also additional JS chunk files if you use code splitting.
-      chunkFilename: isProd ? 'static/js/[name].[contenthash:8].chunk.js' : 'static/js/[name].chunk.js',
+      chunkFilename: isProd ? 'js/[name].[contenthash:8].chunk.js' : 'js/[name].chunk.js',
       // the url to the output directory resolved relative to the HTML page
       publicPath: '/',
       // this defaults to 'window', but by setting it to 'this' then module chunks which are built will work in web workers as well.
       globalObject: 'this',
+      // assets filename
+      assetModuleFilename: 'assets/[name].[contenthash:8][ext][query]',
     },
     optimization: {
       minimize: isProd,
@@ -99,7 +90,7 @@ module.exports = function (webpackEnv) {
           },
         }),
         // This is only used in production mode
-        new CssMinimizerWebpackPlugin({
+        new CSSMinimizerWebpackPlugin({
           minimizerOptions: {
             processorOptions: {
               map: {
@@ -122,8 +113,6 @@ module.exports = function (webpackEnv) {
       },
     },
     resolve: {
-      // From there import modules
-      modules: ['node_modules'],
       // Available importable extensions
       extensions: ['.js', '.ts', '.jsx', '.tsx', '.json'],
       // Aliases for imports
@@ -141,8 +130,6 @@ module.exports = function (webpackEnv) {
               test: /\.(js|jsx|ts|tsx)$/,
               loader: require.resolve('babel-loader'),
               options: {
-                // Directly show config
-                //configFile: path.resolve(__dirname, 'babel.config.js'),
                 // babel-loader cache for faster rebuilds
                 cacheDirectory: true,
                 // Dont compress cache to zip
@@ -154,7 +141,7 @@ module.exports = function (webpackEnv) {
                   [
                     '@babel/preset-react',
                     {
-                      development: isProd,
+                      development: !isProd,
                       runtime: 'automatic',
                     },
                   ],
@@ -180,11 +167,8 @@ module.exports = function (webpackEnv) {
             },
             // File
             {
-              loader: require.resolve('file-loader'),
-              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
-              options: {
-                name: 'static/media/[name].[hash:8].[ext]',
-              },
+              exclude: /(^|\.html)$/,
+              type: 'asset/resource',
             },
           ],
         },
@@ -194,28 +178,17 @@ module.exports = function (webpackEnv) {
       // Import everything to index.html. If prod, minify.
       new HtmlWebpackPlugin({
         template: 'public/index.html',
-        minify: isProd
-          ? {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            }
-          : false,
+        minify: false,
       }),
       // Watcher doesn't work well if you mistype casing
       !isProd && new CaseSensitivePathsWebpackPlugin(),
+      // Check TS types
+      new ForkTSCheckerWebpackPlugin(),
       // Export css to static/css
       isProd &&
-        new MiniCssExtractPlugin({
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+        new MiniCSSExtractPlugin({
+          filename: 'css/[name].[contenthash:8].css',
+          chunkFilename: 'css/[name].[contenthash:8].chunk.css',
         }),
       new ESLintPlugin({
         // Plugin options

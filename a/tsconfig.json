@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "target": "ES6",
     "module": "esnext",
-    "outDir": "./dist",
+    "outDir": "./dist/",
     "lib": [
       "dom",
       "dom.iterable",
