@@ -11,7 +11,7 @@ const PostCSSNormalize = require('postcss-normalize');
 const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = function (webpackEnv) {
-  const isProd = webpackEnv === 'production';
+  const isProd = webpackEnv.WEBPACK_BUILD;
   const cssModules = [
     // Extract css to files in prod, or import style in DOM in development
     isProd
@@ -202,8 +202,6 @@ module.exports = function (webpackEnv) {
       compress: true,
       // from where to serve files
       contentBase: path.join(__dirname, 'public'),
-      // disable webpack's logs
-      clientLogLevel: 'none',
       // trigger reload on files change
       watchContentBase: true,
       // Hot module replacement (works only with css)
