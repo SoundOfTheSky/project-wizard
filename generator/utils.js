@@ -30,13 +30,17 @@ async function copyPath(path, dest) {
     await fs.copyFile(path, dest);
   }
 }
-async function createTree(path, tree) {
+async function createTree(path, tree, files) {
   return Promise.all(
-    tree.map(async el => {
-      const dest = Path.join(path, el.name);
-      if (el.copy) fs.copyFile(el.copy, dest);
-      else await createFile(dest, el.data);
-      if (el.tree) createTree(dest, el.tree);
+    Object.entries(tree).map(async ([name, data]) => {
+      const dest = Path.join(path, name);
+      if (typeof data === 'string') {
+        if (data.startsWith('!')) await copyPath(Path.join(files, data.replace('!', '')), dest);
+        else await createPath(dest, data);
+      } else {
+        await createPath(dest);
+        await createTree(dest, data, files);
+      }
     }),
   );
 }

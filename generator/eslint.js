@@ -17,32 +17,18 @@ module.exports = async (options, deps, devDeps, directory) => {
     if (!eslintConfig.rules) eslintConfig.rules = {};
     eslintConfig.rules['prettier/prettier'] = 1;
   }
-  if (options.transpilers.includes('typescript')) {
+  if (options.features.includes('typescript')) {
     ['@typescript-eslint/parser', '@typescript-eslint/eslint-plugin'].forEach(el => devDeps.add(el));
     eslintConfig.parser = '@typescript-eslint/parser';
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
   }
-  // Not actually sure that using babel parser is a good thing
-  /*if (options.transpiler.includes('babel')) {
-    ['@babel/eslint-parser', '@babel/eslint-plugin'].forEach(el => devDeps.add(el));
-    eslintConfig.parser = '@babel/eslint-parser';
-    eslintConfig.plugins = ['@babel'];
-    eslintConfig.rules = {
-      ...eslintConfig.rules,
-      '@babel/new-cap': 'error',
-      '@babel/no-invalid-this': 'error',
-      '@babel/no-unused-expressions': 'error',
-      '@babel/object-curly-spacing': 'error',
-      '@babel/semi': 'error',
-    };
-  }*/
-  if (options.framework === '💙 React') {
+  if (options.framework === 'react') {
     devDeps.add('eslint-plugin-react');
     eslintConfig.settings = { react: { version: 'detect' } };
     eslintConfig.parserOptions.ecmaFeatures = { jsx: true };
     eslintConfig.extends.unshift('plugin:react/recommended');
-  } else if (options.framework === '💚 Vue') {
+  } else if (options.framework === 'vue') {
     ['vue-eslint-parser', 'eslint-plugin-vue'].forEach(el => devDeps.add(el));
     eslintConfig.extends.unshift('plugin:vue/recommended');
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
@@ -50,7 +36,7 @@ module.exports = async (options, deps, devDeps, directory) => {
   }
   if (prettierEnabled) eslintConfig.extends.push('plugin:prettier/recommended');
   await Utils.createPath(
-    Path.join(directory, '.eslintrc.js'),
+    Path.join(options.directory, '.eslintrc.js'),
     'module.exports = ' + Utils.prettyJSON(eslintConfig, true),
   );
 };

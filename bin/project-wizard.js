@@ -31,7 +31,7 @@ async function create() {
       ],
     },
     {
-      name: 'UIFramework',
+      name: 'frontendFramework',
       type: 'list',
       message: 'UI framework:',
       choices: [
@@ -65,12 +65,12 @@ async function create() {
         { name: '📘 TypeScript', value: 'typescript' },
         { name: '💼 Redux', value: 'redux' },
         { name: '🚀 Router', value: 'router' },
-        { name: '✨ SCSS', value: 'scss' },
+        { name: '✨ SASS/SCSS', value: 'sass' },
         { name: '🃏 Jest', value: 'jest' },
         { name: '🎨 ESLint', value: 'eslint' },
         { name: '🎀 Prettier', value: 'prettier' },
       ],
-      when: ({ UIFramework }) => UIFramework === 'react',
+      when: ({ frontendFramework }) => frontendFramework === 'react',
     },
     {
       name: 'frontendFeatures',
@@ -85,7 +85,7 @@ async function create() {
         { name: '🎨 ESLint', value: 'eslint', checked: true },
         { name: '🎀 Prettier', value: 'prettier', checked: true },
       ],
-      when: ({ UIFramework }) => UIFramework === 'vue',
+      when: ({ frontendFramework }) => frontendFramework === 'vue',
     },
     {
       name: 'frontendFeatures',
@@ -97,7 +97,7 @@ async function create() {
         { name: '🎨 ESLint', value: 'eslint', checked: true },
         { name: '🎀 Prettier', value: 'prettier', checked: true },
       ],
-      when: ({ UIFramework }) => UIFramework === 'none',
+      when: ({ frontendFramework }) => frontendFramework === 'none',
     },
     {
       name: 'backendFramework',
@@ -126,7 +126,7 @@ async function create() {
       type: 'checkbox',
       message: 'Frontend prettier configuration: ',
       pageSize: 10,
-      when: ({ frontendFeatures }) => frontendFeatures.includes('prettier'),
+      when: ({ frontendFeatures }) => frontendFeatures?.includes('prettier'),
       choices: [
         { name: 'Semicolons', value: 'semi', checked: true },
         { name: 'Trailing commas', value: 'trailingComma', checked: true },
@@ -142,7 +142,7 @@ async function create() {
       type: 'checkbox',
       message: 'Backend prettier configuration: ',
       pageSize: 10,
-      when: ({ backendFeatures }) => backendFeatures.includes('prettier'),
+      when: ({ backendFeatures }) => backendFeatures?.includes('prettier'),
       choices: [
         { name: 'Semicolons', value: 'semi', checked: true },
         { name: 'Trailing commas', value: 'trailingComma', checked: true },
