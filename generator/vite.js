@@ -29,9 +29,13 @@ module.exports = async (options, deps, devDeps, packageJSON) => {
     config.plugins.push('!js:vue()');
     devDeps.add('@vitejs/plugin-vue');
     prefix += `import vue from '@vitejs/plugin-vue';\n`;
-    deps.add('vue');
+    deps.add('vue@next');
     devDeps.add('@vue/compiler-sfc');
     if (options.features.includes('typescript')) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
+  }
+  if (options.browserTarget !== 'modules') {
+    if (!config.build) config.build = {};
+    config.build.target = options.target;
   }
   await Utils.createPath(
     Path.join(options.directory, 'vite.config.js'),

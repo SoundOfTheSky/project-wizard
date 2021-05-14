@@ -1,5 +1,6 @@
 const Utils = require('./utils');
 const Path = require('path');
+const { config } = require('process');
 module.exports = async (options, deps, devDeps, directory) => {
   if (!options.features.includes('eslint')) return;
   devDeps.add('eslint');
@@ -10,11 +11,13 @@ module.exports = async (options, deps, devDeps, directory) => {
       ecmaVersion: 2020,
       sourceType: 'module',
     },
+    rules: {
+      'prefer-const': 1,
+    },
   };
   const prettierEnabled = options.features.includes('prettier');
   if (prettierEnabled) {
     ['eslint-plugin-prettier', 'eslint-config-prettier'].forEach(el => devDeps.add(el));
-    if (!eslintConfig.rules) eslintConfig.rules = {};
     eslintConfig.rules['prettier/prettier'] = 1;
   }
   if (options.features.includes('typescript')) {
@@ -22,6 +25,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.parser = '@typescript-eslint/parser';
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
+    config.rules['@typescript-eslint/explicit-module-boundary-types'] = 0;
   }
   if (options.framework === 'react') {
     devDeps.add('eslint-plugin-react');
@@ -30,7 +34,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.extends.unshift('plugin:react/recommended');
   } else if (options.framework === 'vue') {
     ['vue-eslint-parser', 'eslint-plugin-vue'].forEach(el => devDeps.add(el));
-    eslintConfig.extends.unshift('plugin:vue/recommended');
+    eslintConfig.extends.unshift('plugin:vue/vue3-recommended');
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
     eslintConfig.parser = 'vue-eslint-parser';
   }

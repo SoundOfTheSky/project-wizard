@@ -60,6 +60,7 @@ module.exports = async (options, deps, devDeps) => {
       Path.join(options.directory, 'jsconfig.json'),
       Utils.prettyJSON({
         compilerOptions: {
+          baseUrl: '.',
           target: 'ESNext',
           module: 'ESNext',
           allowSyntheticDefaultImports: true,

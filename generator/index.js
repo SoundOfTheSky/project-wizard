@@ -69,6 +69,7 @@ module.exports = async function (options) {
         environment: options.environment,
         framework: options[envPrefix + 'Framework'],
         features,
+        target: options[options.environment + 'Target'],
         prettier: options[envPrefix + 'Prettier'],
       });
       log('📦  200,000 npm packages are ready, with million more well on the way...');
