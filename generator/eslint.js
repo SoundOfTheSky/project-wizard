@@ -25,7 +25,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.parser = '@typescript-eslint/parser';
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
-    config.rules['@typescript-eslint/explicit-module-boundary-types'] = 0;
+    eslintConfig.rules['@typescript-eslint/explicit-module-boundary-types'] = 0;
   }
   if (options.framework === 'react') {
     devDeps.add('eslint-plugin-react');

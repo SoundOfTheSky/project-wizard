@@ -1,0 +1,19 @@
+.App {
+  background: rgb(223, 223, 223);
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+}
+.btn {
+  cursor: pointer;
+  border-radius: 8px;
+  background: rgb(0, 174, 255);
+  color: #fff;
+  padding: 4px;
+  transition: 0.2s;
+  display: grid;
+  align-items: center;
+  &:hover {
+    background: rgb(2, 153, 223);
+  }
+}
