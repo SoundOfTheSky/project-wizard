@@ -1,5 +1,6 @@
 module.exports = {
   extends: ['plugin:prettier/recommended'],
+  ignorePatterns: ['files/**/*'],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',

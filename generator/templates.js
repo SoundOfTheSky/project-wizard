@@ -13,6 +13,12 @@ const reactTS = {
   'index.html': '!index_tsx.html',
   '.gitignore': '!gitignore',
 };
+const reactTSRedux = {
+  src: '!react-ts-redux',
+  public: publicAssets,
+  'index.html': '!index_tsx.html',
+  '.gitignore': '!gitignore',
+};
 const vue = {
   src: '!vue',
   public: publicAssets,
@@ -30,6 +36,7 @@ module.exports = {
   electron: {},
   react,
   reactTS,
+  reactTSRedux,
   vue,
   vueTS,
 };

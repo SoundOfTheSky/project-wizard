@@ -15,12 +15,15 @@ async function createProject(options) {
   if (options.environment === 'browser')
     await Utils.createTree(
       options.directory,
-      Templates[options.framework + (options.features.includes('typescript') ? 'TS' : '')],
+      Templates[
+        options.framework +
+          (options.features.includes('typescript') ? 'TS' : '') +
+          (options.features.includes('redux') ? 'Redux' : '')
+      ],
       filesDirectory,
     );
-  for (const name of ['prettier', 'eslint', 'typescript', 'vite'])
+  for (const name of ['prettier', 'eslint', 'stylelint', 'typescript', 'vite', 'features'])
     await require('./' + name)(options, deps, devDeps, packageJSON);
-  //await Utils.copyPath(Path.join(filesDirectory, 'gitignore'), Path.join(directory, '.gitignore'));
   await Utils.createPath(Path.join(options.directory, 'package.json'), Utils.prettyJSON(packageJSON));
   return {
     deps,
@@ -75,8 +78,9 @@ module.exports = async function (options) {
       log('📦  200,000 npm packages are ready, with million more well on the way...');
       await Utils.execute('yarn', ['add', '-D', ...Array.from(packages.devDeps)], { cwd: directory });
       await Utils.execute('yarn', ['add', ...Array.from(packages.deps)], { cwd: directory });
-      if (features.includes('eslint')) await Utils.execute('yarn eslint', ['.', '--fix'], { cwd: directory });
-      await Utils.execute('git', ['init'], { cwd: directory });
+      const lintFix = require(Path.join(directory, 'package.json')).scripts?.['lint:fix'];
+      if (lintFix) await Utils.execute('yarn', ['lint:fix'], { cwd: directory });
+      //await Utils.execute('git', ['init'], { cwd: directory });
       log('🏁  Finish!');
       await Utils.execute('yarn', ['dev'], { cwd: directory });
     }

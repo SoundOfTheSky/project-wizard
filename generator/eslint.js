@@ -1,8 +1,10 @@
 const Utils = require('./utils');
 const Path = require('path');
 const { config } = require('process');
-module.exports = async (options, deps, devDeps, directory) => {
+module.exports = async (options, deps, devDeps, packageJSON) => {
   if (!options.features.includes('eslint')) return;
+  if (!packageJSON.scripts) packageJSON.scripts = {};
+  const jsResolvables = ['.js', '.jsx'];
   devDeps.add('eslint');
   const eslintConfig = {
     root: true,
@@ -26,6 +28,7 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
     eslintConfig.rules['@typescript-eslint/explicit-module-boundary-types'] = 0;
+    jsResolvables.push('.ts', '.tsx');
   }
   if (options.framework === 'react') {
     devDeps.add('eslint-plugin-react');
@@ -39,6 +42,11 @@ module.exports = async (options, deps, devDeps, directory) => {
     eslintConfig.parser = 'vue-eslint-parser';
   }
   if (prettierEnabled) eslintConfig.extends.push('plugin:prettier/recommended');
+  const cmd = `eslint "src/**/*{${jsResolvables.join(',')}}"`;
+  if (packageJSON.scripts.lint) packageJSON.scripts.lint += ' && ' + cmd;
+  else packageJSON.scripts.lint = cmd;
+  if (packageJSON.scripts['lint:fix']) packageJSON.scripts['lint:fix'] += ' && ' + cmd + ' --fix';
+  else packageJSON.scripts['lint:fix'] = cmd + ' --fix';
   await Utils.createPath(
     Path.join(options.directory, '.eslintrc.js'),
     'module.exports = ' + Utils.prettyJSON(eslintConfig, true),
