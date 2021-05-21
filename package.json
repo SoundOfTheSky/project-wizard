@@ -13,9 +13,13 @@
     "chalk": "^4.1.0",
     "execa": "^5.0.0",
     "get-pixels": "^3.3.2",
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.0.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
   },
   "devDependencies": {
+    "@types/react": "^16.14.6",
+    "@types/react-dom": "^16.9.13",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "types": ["cypress", "jest", "node"],
     "target": "ESNext",
     "lib": [
       "DOM",

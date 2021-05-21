@@ -1,6 +1,6 @@
 const Utils = require('./utils');
 const Path = require('path');
-module.exports = async (options, deps, devDeps, packageJSON) => {
+module.exports = async (options, packageJSON) => {
   if (!packageJSON.scripts) packageJSON.scripts = {};
   packageJSON.scripts.dev = 'vite';
   packageJSON.scripts.build = 'vite build';
@@ -14,23 +14,20 @@ module.exports = async (options, deps, devDeps, packageJSON) => {
       open: true,
     },
   };
-  devDeps.add('vite');
-  if (options.features.includes('sass')) devDeps.add('sass');
+  packageJSON.devDependencies['vite'] = '^2';
+  if (options.features.includes('sass')) packageJSON.devDependencies['sass'] = '^1';
   if (options.framework === 'react') {
     if (!config.plugins) config.plugins = [];
     config.plugins.push('!js:reactRefresh()');
-    devDeps.add('@vitejs/plugin-react-refresh');
+    packageJSON.devDependencies['@vitejs/plugin-react-refresh'] = '^1';
     prefix += `import reactRefresh from '@vitejs/plugin-react-refresh';\n`;
-    deps.add('react');
-    deps.add('react-dom');
     if (options.features.includes('typescript')) packageJSON.scripts.build = 'tsc && vite build';
   } else if (options.framework === 'vue') {
     if (!config.plugins) config.plugins = [];
     config.plugins.push('!js:vue()');
-    devDeps.add('@vitejs/plugin-vue');
+    packageJSON.devDependencies['@vitejs/plugin-vue'] = '^1';
+    packageJSON.devDependencies['@vue/compiler-sfc'] = '^3';
     prefix += `import vue from '@vitejs/plugin-vue';\n`;
-    deps.add('vue@next');
-    devDeps.add('@vue/compiler-sfc');
     if (options.features.includes('typescript')) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
   }
   if (options.browserTarget !== 'modules') {

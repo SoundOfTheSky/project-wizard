@@ -1,8 +1,8 @@
 const Utils = require('./utils');
 const Path = require('path');
-module.exports = async (options, deps, devDeps) => {
+module.exports = async (options, packageJSON) => {
   if (!options.features.includes('prettier')) return;
-  devDeps.add('prettier');
+  packageJSON.devDependencies['prettier'] = 'latest';
   return Utils.createPath(
     Path.join(options.directory, '.prettierrc.js'),
     'module.exports = ' +

@@ -1,11 +1,11 @@
 const Utils = require('./utils');
 const Path = require('path');
 const { config } = require('process');
-module.exports = async (options, deps, devDeps, packageJSON) => {
+module.exports = async (options, packageJSON) => {
   if (!options.features.includes('eslint')) return;
   if (!packageJSON.scripts) packageJSON.scripts = {};
   const jsResolvables = ['.js', '.jsx'];
-  devDeps.add('eslint');
+  packageJSON.devDependencies['eslint'] = 'latest';
   const eslintConfig = {
     root: true,
     extends: [],
@@ -19,11 +19,13 @@ module.exports = async (options, deps, devDeps, packageJSON) => {
   };
   const prettierEnabled = options.features.includes('prettier');
   if (prettierEnabled) {
-    ['eslint-plugin-prettier', 'eslint-config-prettier'].forEach(el => devDeps.add(el));
+    packageJSON.devDependencies['eslint-plugin-prettier'] = 'latest';
+    packageJSON.devDependencies['eslint-config-prettier'] = 'latest';
     eslintConfig.rules['prettier/prettier'] = 1;
   }
   if (options.features.includes('typescript')) {
-    ['@typescript-eslint/parser', '@typescript-eslint/eslint-plugin'].forEach(el => devDeps.add(el));
+    packageJSON.devDependencies['@typescript-eslint/parser'] = 'latest';
+    packageJSON.devDependencies['@typescript-eslint/eslint-plugin'] = 'latest';
     eslintConfig.parser = '@typescript-eslint/parser';
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
@@ -31,12 +33,13 @@ module.exports = async (options, deps, devDeps, packageJSON) => {
     jsResolvables.push('.ts', '.tsx');
   }
   if (options.framework === 'react') {
-    devDeps.add('eslint-plugin-react');
+    packageJSON.devDependencies['eslint-plugin-react'] = 'latest';
     eslintConfig.settings = { react: { version: 'detect' } };
     eslintConfig.parserOptions.ecmaFeatures = { jsx: true };
     eslintConfig.extends.unshift('plugin:react/recommended');
   } else if (options.framework === 'vue') {
-    ['vue-eslint-parser', 'eslint-plugin-vue'].forEach(el => devDeps.add(el));
+    packageJSON.devDependencies['vue-eslint-parser'] = 'latest';
+    packageJSON.devDependencies['eslint-plugin-vue'] = 'latest';
     eslintConfig.extends.unshift('plugin:vue/vue3-recommended');
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
     eslintConfig.parser = 'vue-eslint-parser';

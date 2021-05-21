@@ -1,8 +1,8 @@
 const Utils = require('./utils');
 const Path = require('path');
-module.exports = async (options, deps, devDeps) => {
+module.exports = async (options, packageJSON) => {
   if (options.features.includes('typescript')) {
-    devDeps.add('typescript');
+    packageJSON.devDependencies['typescript'] = '^4';
     const tsconfig = {
       compilerOptions: {
         baseUrl: '.',
@@ -49,11 +49,8 @@ module.exports = async (options, deps, devDeps) => {
       exclude: ['node_modules'],
     };
     // Compile JSX using jsx function from react/jsx-runtime
-    if (options.framework === 'react') {
-      tsconfig.compilerOptions.jsx = 'react-jsx';
-      devDeps.add('@types/react');
-      devDeps.add('@types/react-dom');
-    } else if (options.framework === 'vue') tsconfig.compilerOptions.jsx = 'preserve';
+    if (options.framework === 'react') tsconfig.compilerOptions.jsx = 'react-jsx';
+    else if (options.framework === 'vue') tsconfig.compilerOptions.jsx = 'preserve';
     await Utils.createPath(Path.join(options.directory, 'tsconfig.json'), Utils.prettyJSON(tsconfig));
   } else
     await Utils.createPath(

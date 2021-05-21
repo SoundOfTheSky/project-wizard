@@ -1,3 +1,4 @@
+const Path = require('path');
 const publicAssets = {
   'favicon.ico': '!favicon.ico',
 };
@@ -14,10 +15,28 @@ const reactTS = {
   '.gitignore': '!gitignore',
 };
 const reactTSRedux = {
+  ...reactTS,
   src: '!react-ts-redux',
-  public: publicAssets,
-  'index.html': '!index_tsx.html',
-  '.gitignore': '!gitignore',
+};
+const reactTSReduxRouter = {
+  ...reactTS,
+  src: '!react-ts-redux-router',
+};
+const reactTSRouter = {
+  ...reactTS,
+  src: '!react-ts-router',
+};
+const reactRedux = {
+  ...reactTS,
+  src: '!react-redux',
+};
+const reactReduxRouter = {
+  ...reactTS,
+  src: '!react-redux-router',
+};
+const reactRouter = {
+  ...reactTS,
+  src: '!react-router',
 };
 const vue = {
   src: '!vue',
@@ -35,8 +54,13 @@ module.exports = {
   publicAssets,
   electron: {},
   react,
+  reactRedux,
+  reactReduxRouter,
+  reactRouter,
   reactTS,
   reactTSRedux,
+  reactTSReduxRouter,
+  reactTSRouter,
   vue,
   vueTS,
 };
