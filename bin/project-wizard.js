@@ -8,12 +8,12 @@ async function create() {
       name: 'name',
       type: 'input',
       message: 'Project name:',
-      validate: str => str.length > 0,
+      validate: str => str.length > 0 || 'pls enter name',
     },
     {
       name: 'newDirectory',
       type: 'list',
-      message: 'Select folder:',
+      message: 'Select:',
       choices: [
         { name: '👌 New folder', value: true },
         { name: '🏡 This folder', value: false },
@@ -57,17 +57,19 @@ async function create() {
         { name: '4️⃣  ES2017', value: 'es2017' },
         { name: '5️⃣  ES2016', value: 'es2016' },
       ],
-      when: ({ environment }) => environment !== 'node',
+      default: ({ environment }) => (environment === 'electron' ? 'esnext' : 'modules'),
+      when: ({ environment }) => ['browser', 'fullstack'].includes(environment),
     },
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: 'Frontend features:',
+      message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
         { name: '💼 Redux', value: 'redux' },
         { name: '🚀 Router', value: 'router' },
         { name: '✨ SASS/SCSS', value: 'sass' },
+        new inquirer.Separator('=== Formatting ==='),
         { name: '🎨 ESLint', value: 'eslint', checked: true },
         { name: '🎀 Prettier', value: 'prettier', checked: true },
         { name: '💎 StyleLint', value: 'stylelint', checked: true },
@@ -105,12 +107,13 @@ async function create() {
         { name: '🎨 ESLint', value: 'eslint', checked: true },
         { name: '🎀 Prettier', value: 'prettier', checked: true },
       ],
-      when: ({ environment }) => ['node', 'fullstack'].includes(environment),
+      when: ({ environment }) => environment === 'electron',
     },
     {
       name: 'frontendPrettier',
       type: 'checkbox',
-      message: 'Frontend prettier configuration: ',
+      message: ({ environment }) =>
+        environment === 'electron' ? 'UI prettier configuration:' : 'Frontend prettier configuration:',
       pageSize: 10,
       when: ({ frontendFeatures }) => frontendFeatures?.includes('prettier'),
       choices: [
@@ -126,7 +129,8 @@ async function create() {
     {
       name: 'backendPrettier',
       type: 'checkbox',
-      message: 'Backend prettier configuration: ',
+      message: ({ environment }) =>
+        environment === 'electron' ? 'Main process prettier configuration:' : 'Backend prettier configuration:',
       pageSize: 10,
       when: ({ backendFeatures }) => backendFeatures?.includes('prettier'),
       choices: [
