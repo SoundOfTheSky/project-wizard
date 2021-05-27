@@ -1,9 +1,7 @@
 const Utils = require('./utils');
 const Path = require('path');
-const { config } = require('process');
 module.exports = async (options, packageJSON) => {
   if (!options.features.includes('eslint')) return;
-  if (!packageJSON.scripts) packageJSON.scripts = {};
   const jsResolvables = ['.js', '.jsx'];
   packageJSON.devDependencies['eslint'] = 'latest';
   const eslintConfig = {
@@ -37,12 +35,13 @@ module.exports = async (options, packageJSON) => {
     eslintConfig.settings = { react: { version: 'detect' } };
     eslintConfig.parserOptions.ecmaFeatures = { jsx: true };
     eslintConfig.extends.unshift('plugin:react/recommended');
-  } else if (options.framework === 'vue') {
+  } else if (options.framework.startsWith('vue')) {
     packageJSON.devDependencies['vue-eslint-parser'] = 'latest';
     packageJSON.devDependencies['eslint-plugin-vue'] = 'latest';
-    eslintConfig.extends.unshift('plugin:vue/vue3-recommended');
+    eslintConfig.extends.unshift('plugin:vue/' + (options.framework[3] === '3' ? 'vue3-recommended' : 'recommended'));
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
     eslintConfig.parser = 'vue-eslint-parser';
+    jsResolvables.push('.vue');
   }
   if (prettierEnabled) eslintConfig.extends.push('plugin:prettier/recommended');
   const cmd = `eslint "src/**/*{${jsResolvables.join(',')}}"`;

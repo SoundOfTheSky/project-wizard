@@ -40,13 +40,14 @@ module.exports = async (options, packageJSON) => {
         noImplicitReturns: true,
         // Don't return files
         noEmit: true,
+        // ES6 decorators support
+        experimentalDecorators: true,
         // Alias for imports
         paths: {
           '@/*': ['src/*'],
         },
       },
-      include: ['src'],
-      exclude: ['node_modules'],
+      exclude: ['node_modules', 'dist'],
     };
     // Compile JSX using jsx function from react/jsx-runtime
     if (options.framework === 'react') tsconfig.compilerOptions.jsx = 'react-jsx';
@@ -61,13 +62,13 @@ module.exports = async (options, packageJSON) => {
           target: 'ESNext',
           module: 'ESNext',
           allowSyntheticDefaultImports: true,
+          experimentalDecorators: true,
           moduleResolution: 'Node',
           paths: {
             '@/*': ['src/*'],
           },
         },
-        include: ['src'],
-        exclude: ['node_modules'],
+        exclude: ['node_modules', 'dist'],
       }),
     );
 };

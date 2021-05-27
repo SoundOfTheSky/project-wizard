@@ -3,6 +3,10 @@ const Path = require('path');
 module.exports = async (options, packageJSON) => {
   if (!options.features.includes('prettier')) return;
   packageJSON.devDependencies['prettier'] = 'latest';
+  if (packageJSON.scripts.lint) packageJSON.scripts.lint += ' && prettier -c "**/*.json"';
+  else packageJSON.scripts.lint = 'prettier -c "**/*.json"';
+  if (packageJSON.scripts['lint:fix']) packageJSON.scripts['lint:fix'] += 'prettier -w "**/*.json"';
+  else packageJSON.scripts['lint:fix'] = 'prettier -w "**/*.json"';
   return Utils.createPath(
     Path.join(options.directory, '.prettierrc.js'),
     'module.exports = ' +

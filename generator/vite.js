@@ -1,7 +1,6 @@
 const Utils = require('./utils');
 const Path = require('path');
 module.exports = async (options, packageJSON) => {
-  if (!packageJSON.scripts) packageJSON.scripts = {};
   packageJSON.scripts.dev = 'vite';
   packageJSON.scripts.build = 'vite build';
   packageJSON.scripts.serve = 'vite preview';
@@ -22,12 +21,18 @@ module.exports = async (options, packageJSON) => {
     packageJSON.devDependencies['@vitejs/plugin-react-refresh'] = '^1';
     prefix += `import reactRefresh from '@vitejs/plugin-react-refresh';\n`;
     if (options.features.includes('typescript')) packageJSON.scripts.build = 'tsc && vite build';
-  } else if (options.framework === 'vue') {
+  } else if (options.framework.startsWith('vue')) {
     if (!config.plugins) config.plugins = [];
-    config.plugins.push('!js:vue()');
-    packageJSON.devDependencies['@vitejs/plugin-vue'] = '^1';
-    packageJSON.devDependencies['@vue/compiler-sfc'] = '^3';
-    prefix += `import vue from '@vitejs/plugin-vue';\n`;
+    if (options.framework[3] === '3') {
+      packageJSON.devDependencies['@vitejs/plugin-vue'] = '^1';
+      packageJSON.devDependencies['@vue/compiler-sfc'] = '^3';
+      prefix += `import vue from '@vitejs/plugin-vue';\n`;
+      config.plugins.push('!js:vue()');
+    } else {
+      packageJSON.devDependencies['vite-plugin-vue2'] = '^1';
+      prefix += `import { createVuePlugin } from 'vite-plugin-vue2';\n`;
+      config.plugins.push('!js:createVuePlugin({ jsx: true })');
+    }
     if (options.features.includes('typescript')) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
   }
   if (options.browserTarget !== 'modules') {

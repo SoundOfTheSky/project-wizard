@@ -14,6 +14,7 @@ async function create() {
       name: 'newDirectory',
       type: 'list',
       message: 'Select:',
+      pageSize: 2,
       choices: [
         { name: '👌 New folder', value: true },
         { name: '🏡 This folder', value: false },
@@ -23,6 +24,7 @@ async function create() {
       name: 'environment',
       type: 'list',
       message: 'Select environment:',
+      pageSize: 4,
       choices: [
         { name: '📰 Browser', value: 'browser' },
         { name: '🟢 Node.js', value: 'node' },
@@ -34,9 +36,12 @@ async function create() {
       name: 'frontendFramework',
       type: 'list',
       message: 'UI framework:',
+      pageSize: 4,
       choices: [
         { name: '❌ None', value: 'none' },
         { name: '💙 React', value: 'react' },
+        { name: '💚 Vue 2', value: 'vue2' },
+        { name: '💚 Vue 3', value: 'vue3' },
       ],
       when: ({ environment }) => environment !== 'node',
     },
@@ -44,6 +49,7 @@ async function create() {
       name: 'browserTarget',
       type: 'list',
       message: 'Browser target:',
+      pageSize: 7,
       choices: [
         { name: '👶 ESNext - No transpiling, only minification (fastest)', value: 'esnext' },
         {
@@ -64,6 +70,7 @@ async function create() {
       name: 'frontendFeatures',
       type: 'checkbox',
       message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
+      pageSize: 8,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
         { name: '💼 Redux', value: 'redux' },
@@ -77,9 +84,27 @@ async function create() {
       when: ({ frontendFramework }) => frontendFramework === 'react',
     },
     {
+      name: 'frontendFeatures',
+      type: 'checkbox',
+      message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
+      pageSize: 8,
+      choices: [
+        { name: '📘 TypeScript', value: 'typescript' },
+        { name: '💼 Vuex', value: 'vuex' },
+        { name: '🚀 Router', value: 'router' },
+        { name: '✨ SASS/SCSS', value: 'sass' },
+        new inquirer.Separator('=== Formatting ==='),
+        { name: '🎨 ESLint', value: 'eslint', checked: true },
+        { name: '🎀 Prettier', value: 'prettier', checked: true },
+        { name: '💎 StyleLint', value: 'stylelint', checked: true },
+      ],
+      when: ({ frontendFramework }) => frontendFramework.startsWith('vue'),
+    },
+    {
       name: 'backendFramework',
       type: 'list',
       message: 'Backend framework:',
+      pageSize: 3,
       choices: [
         { name: '❌ None', value: 'none' },
         { name: '🔨 Express', value: 'express' },
@@ -91,6 +116,7 @@ async function create() {
       name: 'backendFeatures',
       type: 'checkbox',
       message: 'Backend features:',
+      pageSize: 3,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
         { name: '🎨 ESLint', value: 'eslint', checked: true },
@@ -102,6 +128,7 @@ async function create() {
       name: 'backendFeatures',
       type: 'checkbox',
       message: 'Main process features:',
+      pageSize: 3,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
         { name: '🎨 ESLint', value: 'eslint', checked: true },
@@ -114,7 +141,7 @@ async function create() {
       type: 'checkbox',
       message: ({ environment }) =>
         environment === 'electron' ? 'UI prettier configuration:' : 'Frontend prettier configuration:',
-      pageSize: 10,
+      pageSize: 7,
       when: ({ frontendFeatures }) => frontendFeatures?.includes('prettier'),
       choices: [
         { name: 'Semicolons', value: 'semi', checked: true },
@@ -131,7 +158,7 @@ async function create() {
       type: 'checkbox',
       message: ({ environment }) =>
         environment === 'electron' ? 'Main process prettier configuration:' : 'Backend prettier configuration:',
-      pageSize: 10,
+      pageSize: 7,
       when: ({ backendFeatures }) => backendFeatures?.includes('prettier'),
       choices: [
         { name: 'Semicolons', value: 'semi', checked: true },

@@ -38,17 +38,41 @@ const reactRouter = {
   ...reactTS,
   src: '!react-router',
 };
-const vue = {
+const vue2 = {
   src: '!vue',
   public: publicAssets,
   'index.html': '!index_js.html',
   '.gitignore': '!gitignore',
 };
-const vueTS = {
+const vue2TS = {
   src: '!vue-ts',
   public: publicAssets,
   'index.html': '!index_ts.html',
   '.gitignore': '!gitignore',
+};
+const vue2TSVuex = {
+  ...vue2TS,
+  src: '!vue-ts',
+};
+const vue2TSVuexRouter = {
+  ...vue2TS,
+  src: '!vue-ts',
+};
+const vue2TSRouter = {
+  ...vue2TS,
+  src: '!vue-ts',
+};
+const vue2Vuex = {
+  ...vue2,
+  src: '!vue',
+};
+const vue2VuexRouter = {
+  ...vue2,
+  src: '!vue2-vuex-router',
+};
+const vue2Router = {
+  ...vue2,
+  src: '!vue',
 };
 module.exports = {
   publicAssets,
@@ -61,6 +85,12 @@ module.exports = {
   reactTSRedux,
   reactTSReduxRouter,
   reactTSRouter,
-  vue,
-  vueTS,
+  vue2,
+  vue2TS,
+  vue2TSVuex,
+  vue2TSVuexRouter,
+  vue2TSRouter,
+  vue2Vuex,
+  vue2VuexRouter,
+  vue2Router,
 };

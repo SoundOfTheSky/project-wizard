@@ -11,18 +11,35 @@ async function createProject(options) {
     license: 'MIT',
     dependencies: {},
     devDependencies: {},
+    scripts: {},
   };
-  if (options.environment === 'browser')
+  if (options.environment === 'browser') {
+    console.log(
+      options.framework +
+        (options.features.includes('typescript') ? 'TS' : '') +
+        (options.features.includes('redux') ? 'Redux' : '') +
+        (options.features.includes('vuex') ? 'Vuex' : '') +
+        (options.features.includes('router') ? 'Router' : ''),
+      Templates[
+        options.framework +
+          (options.features.includes('typescript') ? 'TS' : '') +
+          (options.features.includes('redux') ? 'Redux' : '') +
+          (options.features.includes('vuex') ? 'Vuex' : '') +
+          (options.features.includes('router') ? 'Router' : '')
+      ],
+    );
     await Utils.createTree(
       options.directory,
       Templates[
         options.framework +
           (options.features.includes('typescript') ? 'TS' : '') +
           (options.features.includes('redux') ? 'Redux' : '') +
+          (options.features.includes('vuex') ? 'Vuex' : '') +
           (options.features.includes('router') ? 'Router' : '')
       ],
       filesDirectory,
     );
+  }
   for (const name of ['prettier', 'eslint', 'stylelint', 'typescript', 'vite', 'features'])
     await require('./' + name)(options, packageJSON);
   await Utils.createPath(Path.join(options.directory, 'package.json'), Utils.prettyJSON(packageJSON));
