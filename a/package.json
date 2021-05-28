@@ -1,0 +1,35 @@
+{
+  "name": "a",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "react": "16",
+    "react-dom": "16",
+    "prop-types": "15"
+  },
+  "devDependencies": {
+    "prettier": "latest",
+    "eslint": "latest",
+    "eslint-plugin-prettier": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-react": "latest",
+    "stylelint": "latest",
+    "stylelint-config-rational-order": "latest",
+    "stylelint-config-standard": "latest",
+    "stylelint-order": "latest",
+    "stylelint-scss": "latest",
+    "stylelint-config-recommended-scss": "latest",
+    "stylelint-prettier": "latest",
+    "stylelint-config-prettier": "latest",
+    "vite": "^2",
+    "sass": "^1",
+    "@vitejs/plugin-react-refresh": "^1"
+  },
+  "scripts": {
+    "lint": "prettier -c \"**/*.json\" && eslint \"src/**/*{.js,.jsx}\" && stylelint \"src/**/*{.css,.scss}\"",
+    "lint:fix": "prettier -w \"**/*.json\" && eslint \"src/**/*{.js,.jsx}\" --fix && stylelint \"src/**/*{.css,.scss}\" --fix",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  }
+}

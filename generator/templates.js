@@ -27,15 +27,15 @@ const reactTSRouter = {
   src: '!react-ts-router',
 };
 const reactRedux = {
-  ...reactTS,
+  ...react,
   src: '!react-redux',
 };
 const reactReduxRouter = {
-  ...reactTS,
+  ...react,
   src: '!react-redux-router',
 };
 const reactRouter = {
-  ...reactTS,
+  ...react,
   src: '!react-router',
 };
 const vue2 = {
@@ -74,6 +74,62 @@ const vue2Router = {
   ...vue2,
   src: '!vue',
 };
+function treeByFeatures(f) {
+  let tree = {};
+  if (f.react) {
+    tree = {
+      'index.jsx': '!react/index.jsx',
+      'index.css': '!react/index.css',
+      'App.css': '!react/App.css',
+      'App.jsx': '!react/App.jsx',
+      api: {
+        'index.js': '!react/api/index.js',
+      },
+      components: {
+        'Todo.jsx': '!react/components/Todo.jsx',
+        'Todo.css': '!react/components/Todo.css',
+        'TodoItem.jsx': '!react/components/TodoItem.jsx',
+      },
+    };
+    if (f.redux) {
+      tree['index.jsx'] = tree['index.jsx'].reaplce('.jsx', '-redux.jsx');
+      tree.components['Todo.jsx'] = tree.components['Todo.jsx'].reaplce('.jsx', '-redux.jsx');
+      tree.components['TodoItem.jsx'] = tree.components['TodoItem.jsx'].reaplce('.jsx', '-redux.jsx');
+    }
+    if (f.router) {
+      tree['index.jsx'] = tree['index.jsx'].reaplce('.jsx', '-router.jsx');
+      tree['App.jsx'] = tree['App.jsx'].reaplce('.jsx', '-router.jsx');
+      tree.components['Todo.jsx'] = tree.components['Todo.jsx'].reaplce('.jsx', '-router.jsx');
+      tree.components['About.jsx'] = '!react/components/About-router.jsx';
+      tree.components['About.css'] = '!react/components/About-router.css';
+    }
+    if (f.typescript) {
+      const r = t => {
+        Object.keys(t).forEach(k => {
+          if (typeof t[k] !== 'string') r(t[k]);
+          else if (k.includes('.js')) {
+            t[k.replace('.js', '.ts')] = t[k].replace('.js', '.ts');
+            delete t[k];
+          }
+        });
+      };
+      r(tree);
+      tree['custom.d.ts'] = '!react/custom.d.ts';
+    }
+    if (f.sass) {
+      const r = t => {
+        Object.keys(t).forEach(k => {
+          if (typeof t[k] !== 'string') r(t[k]);
+          else if (k.includes('.css')) {
+            t[k.replace('.css', '.scss')] = t[k].replace('.css', '.scss');
+            delete t[k];
+          }
+        });
+      };
+      r(tree);
+    }
+  }
+}
 module.exports = {
   publicAssets,
   electron: {},

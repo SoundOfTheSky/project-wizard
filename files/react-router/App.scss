@@ -2,19 +2,18 @@
   display: grid;
   align-items: center;
   min-height: 100vh;
-  background: #dfdfdf;
+  background: rgb(223, 223, 223);
 }
-
 .btn {
   display: grid;
   align-items: center;
   padding: 4px;
   color: #fff;
-  background: #00aeff;
+  background: rgb(0, 174, 255);
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
-}
-.btn:hover {
-  background: #0299df;
+  &:hover {
+    background: rgb(2, 153, 223);
+  }
 }
