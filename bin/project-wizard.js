@@ -101,6 +101,21 @@ async function create() {
       when: ({ frontendFramework }) => frontendFramework.startsWith('vue'),
     },
     {
+      name: 'frontendFeatures',
+      type: 'checkbox',
+      message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
+      pageSize: 8,
+      choices: [
+        { name: '📘 TypeScript', value: 'typescript' },
+        { name: '✨ SASS/SCSS', value: 'sass' },
+        new inquirer.Separator('=== Formatting ==='),
+        { name: '🎨 ESLint', value: 'eslint', checked: true },
+        { name: '🎀 Prettier', value: 'prettier', checked: true },
+        { name: '💎 StyleLint', value: 'stylelint', checked: true },
+      ],
+      when: ({ frontendFramework }) => frontendFramework === 'none',
+    },
+    {
       name: 'backendFramework',
       type: 'list',
       message: 'Backend framework:',

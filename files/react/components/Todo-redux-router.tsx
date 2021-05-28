@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { add, getTodosAction } from '@/store/slices/todos';
 import { RootState } from '@/store';
-import './Todo.scss';
+import './Todo.css';
 import TodoItem from './TodoItem';
 import { Link } from 'react-router-dom';
 

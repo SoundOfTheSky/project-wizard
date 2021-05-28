@@ -74,10 +74,23 @@ const vue2Router = {
   ...vue2,
   src: '!vue',
 };
-function treeByFeatures(f) {
-  let tree = {};
-  if (f.react) {
-    tree = {
+function getTemplate(f) {
+  let tree = {
+    src: {
+      'index.js': '!none/index.js',
+      'index.css': '!none/index.css',
+      api: {
+        'index.js': '!none/api/index.js',
+      },
+    },
+    public: publicAssets,
+    'index.html': f.typescript ? '!index-ts.html' : '!index-js.html',
+    '.gitignore': '!gitignore',
+  };
+  const middlewares = [];
+  if (f.framework === 'react') {
+    tree['index.html'] = f.typescript ? '!index-tsx.html' : '!index-jsx.html';
+    tree.src = {
       'index.jsx': '!react/index.jsx',
       'index.css': '!react/index.css',
       'App.css': '!react/App.css',
@@ -92,43 +105,61 @@ function treeByFeatures(f) {
       },
     };
     if (f.redux) {
-      tree['index.jsx'] = tree['index.jsx'].reaplce('.jsx', '-redux.jsx');
-      tree.components['Todo.jsx'] = tree.components['Todo.jsx'].reaplce('.jsx', '-redux.jsx');
-      tree.components['TodoItem.jsx'] = tree.components['TodoItem.jsx'].reaplce('.jsx', '-redux.jsx');
+      tree.src['index.jsx'] = tree.src['index.jsx'].replace('.jsx', '-redux.jsx');
+      tree.src.components['Todo.jsx'] = tree.src.components['Todo.jsx'].replace('.jsx', '-redux.jsx');
+      tree.src.components['TodoItem.jsx'] = tree.src.components['TodoItem.jsx'].replace('.jsx', '-redux.jsx');
+      tree.src.store = {
+        slices: {
+          'todos.js': '!react/store/slices/todos-redux.js',
+        },
+        'index.js': '!react/store/index-redux.js',
+      };
     }
     if (f.router) {
-      tree['index.jsx'] = tree['index.jsx'].reaplce('.jsx', '-router.jsx');
-      tree['App.jsx'] = tree['App.jsx'].reaplce('.jsx', '-router.jsx');
-      tree.components['Todo.jsx'] = tree.components['Todo.jsx'].reaplce('.jsx', '-router.jsx');
-      tree.components['About.jsx'] = '!react/components/About-router.jsx';
-      tree.components['About.css'] = '!react/components/About-router.css';
+      tree.src['index.jsx'] = tree.src['index.jsx'].replace('.jsx', '-router.jsx');
+      tree.src['App.jsx'] = tree.src['App.jsx'].replace('.jsx', '-router.jsx');
+      tree.src.components['Todo.jsx'] = tree.src.components['Todo.jsx'].replace('.jsx', '-router.jsx');
+      tree.src.components['About.jsx'] = '!react/components/About-router.jsx';
+      tree.src.components['About.css'] = '!react/components/About-router.css';
     }
-    if (f.typescript) {
-      const r = t => {
-        Object.keys(t).forEach(k => {
-          if (typeof t[k] !== 'string') r(t[k]);
-          else if (k.includes('.js')) {
-            t[k.replace('.js', '.ts')] = t[k].replace('.js', '.ts');
-            delete t[k];
-          }
-        });
-      };
-      r(tree);
-      tree['custom.d.ts'] = '!react/custom.d.ts';
-    }
-    if (f.sass) {
-      const r = t => {
-        Object.keys(t).forEach(k => {
-          if (typeof t[k] !== 'string') r(t[k]);
-          else if (k.includes('.css')) {
-            t[k.replace('.css', '.scss')] = t[k].replace('.css', '.scss');
-            delete t[k];
-          }
-        });
-      };
-      r(tree);
-    }
+    if (f.typescript) tree.src['custom.d.ts'] = '!react/custom.d.ts';
   }
+  // Transform all files from /.js/ to /.ts/
+  if (f.typescript) {
+    const r = t => {
+      Object.keys(t).forEach(k => {
+        if (typeof t[k] !== 'string') r(t[k]);
+        else if (k.includes('.js')) {
+          t[k.replace('.js', '.ts')] = t[k].replace('.js', '.ts');
+          delete t[k];
+        }
+      });
+    };
+    r(tree);
+  }
+  // Transform all files from /.css/ to /.scss/
+  // Middleware transform text 'import *.css' to 'import *.scss'
+  if (f.sass) {
+    const r = t => {
+      Object.keys(t).forEach(k => {
+        if (typeof t[k] !== 'string') r(t[k]);
+        else if (k.includes('.css')) {
+          t[k.replace('.css', '.scss')] = t[k].replace('.css', '.scss');
+          delete t[k];
+        }
+      });
+    };
+    r(tree);
+    middlewares.push((t, dest) => {
+      if (['.js', '.ts', '.jsx', '.tsx', '.vue'].some(r => dest.endsWith(r))) {
+        const re = /import .*\.css/;
+        let el;
+        while ((el = re.exec(t)) !== null) t = t.replace(el[0], el[0].replace('.css', '.scss'));
+      }
+      return t;
+    });
+  }
+  return { tree, middlewares };
 }
 module.exports = {
   publicAssets,
@@ -149,4 +180,5 @@ module.exports = {
   vue2Vuex,
   vue2VuexRouter,
   vue2Router,
+  getTemplate,
 };

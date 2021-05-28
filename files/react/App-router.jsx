@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import './App.scss';
+import './App.css';
 import Todo from '@/components/Todo';
 import About from '@/components/About';
 
 function App() {
   return (
-    <div className="App">
+    <div className="app">
       <Switch>
         <Route exact path="/">
           <Todo />

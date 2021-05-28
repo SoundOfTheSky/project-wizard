@@ -14,31 +14,18 @@ async function createProject(options) {
     scripts: {},
   };
   if (options.environment === 'browser') {
-    console.log(
-      options.framework +
-        (options.features.includes('typescript') ? 'TS' : '') +
-        (options.features.includes('redux') ? 'Redux' : '') +
-        (options.features.includes('vuex') ? 'Vuex' : '') +
-        (options.features.includes('router') ? 'Router' : ''),
-      Templates[
-        options.framework +
-          (options.features.includes('typescript') ? 'TS' : '') +
-          (options.features.includes('redux') ? 'Redux' : '') +
-          (options.features.includes('vuex') ? 'Vuex' : '') +
-          (options.features.includes('router') ? 'Router' : '')
-      ],
-    );
-    await Utils.createTree(
-      options.directory,
-      Templates[
-        options.framework +
-          (options.features.includes('typescript') ? 'TS' : '') +
-          (options.features.includes('redux') ? 'Redux' : '') +
-          (options.features.includes('vuex') ? 'Vuex' : '') +
-          (options.features.includes('router') ? 'Router' : '')
-      ],
-      filesDirectory,
-    );
+    const template = Templates.getTemplate({
+      framework: options.framework,
+      sass: options.features.includes('sass'),
+      typescript: options.features.includes('typescript'),
+      router: options.features.includes('router'),
+      redux: options.features.includes('redux'),
+    });
+    console.log(template.tree);
+    await Utils.createTree(options.directory, template.tree, filesDirectory, async (t, dest) => {
+      for (const middleware of template.middlewares) t = await middleware(t, dest);
+      return t;
+    });
   }
   for (const name of ['prettier', 'eslint', 'stylelint', 'typescript', 'vite', 'features'])
     await require('./' + name)(options, packageJSON);

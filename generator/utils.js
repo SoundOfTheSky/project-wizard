@@ -20,26 +20,27 @@ async function createPath(path, data) {
   if (data) await fs.writeFile(path, data, 'utf8');
   else await fs.mkdir(path);
 }
-async function copyPath(path, dest) {
+async function copyPath(path, dest, middleware = t => t) {
   const [stats, destStats] = await Promise.all([pathExists(path), pathExists(dest)]);
   if (stats.isDirectory()) {
     if (!destStats) await fs.mkdir(dest);
     await Promise.all((await fs.readdir(path)).map(file => copyPath(Path.join(path, file), Path.join(dest, file))));
   } else {
     if (destStats) await removePath(dest);
-    await fs.copyFile(path, dest);
+    const text = await fs.readFile(path, 'utf8');
+    await fs.writeFile(dest, await middleware(text, dest), 'utf8');
   }
 }
-async function createTree(path, tree, files) {
+async function createTree(path, tree, files, middleware) {
   return Promise.all(
     Object.entries(tree).map(async ([name, data]) => {
       const dest = Path.join(path, name);
       if (typeof data === 'string') {
-        if (data.startsWith('!')) await copyPath(Path.join(files, data.replace('!', '')), dest);
+        if (data.startsWith('!')) await copyPath(Path.join(files, data.replace('!', '')), dest, middleware);
         else await createPath(dest, data);
       } else {
         await createPath(dest);
-        await createTree(dest, data, files);
+        await createTree(dest, data, files, middleware);
       }
     }),
   );

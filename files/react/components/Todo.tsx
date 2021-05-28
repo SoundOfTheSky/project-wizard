@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './Todo.scss';
+import './Todo.css';
 import TodoItem from './TodoItem';
 import { todoItem, getTodos } from '@/api';
 function Todo() {
