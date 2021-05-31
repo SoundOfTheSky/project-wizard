@@ -41,50 +41,24 @@ module.exports = async function (options) {
       directory = Path.join(directory, options.name);
       if (!(await Utils.pathExists(directory))) await Utils.createPath(directory);
     }
-    if (options.environment === 'electron') {
-      await Utils.createTree(
-        directory,
-        {
-          main: {},
-          renderer: {},
-        },
-        filesDirectory,
-      );
-      await createProject();
-    } else if (options.environment === 'fullstack') {
-      await Utils.createTree(
-        directory,
-        {
-          backend: {
-            src: {},
-          },
-          frontend: {
-            src: {},
-          },
-        },
-        filesDirectory,
-      );
-      await createProject();
-    } else {
-      const envPrefix = options.environment === 'browser' ? 'frontend' : 'backend';
-      const features = options[envPrefix + 'Features'];
-      const packageJSON = await createProject({
-        directory,
-        name: options.name,
-        environment: options.environment,
-        framework: options[envPrefix + 'Framework'],
-        features,
-        target: options[options.environment + 'Target'],
-        prettier: options[envPrefix + 'Prettier'],
-      });
-      log('📦  200,000 npm packages are ready, with million more well on the way...');
-      await Utils.execute('yarn', ['install'], { cwd: directory });
-      const lintFix = packageJSON.scripts?.['lint:fix'];
-      if (lintFix) await Utils.execute('yarn', ['lint:fix'], { cwd: directory });
-      //await Utils.execute('git', ['init'], { cwd: directory });
-      log('🏁  Finish!');
-      await Utils.execute('yarn', ['dev'], { cwd: directory });
-    }
+    const envPrefix = ['browser','electron'].includes(options.environment) ? 'frontend' : 'backend';
+    const features = options[envPrefix + 'Features'];
+    const packageJSON = await createProject({
+      directory,
+      name: options.name,
+      environment: options.environment,
+      framework: options[envPrefix + 'Framework'],
+      features,
+      target: options[options.environment + 'Target'],
+      prettier: options[envPrefix + 'Prettier'],
+    });
+    log('📦  200,000 npm packages are ready, with million more well on the way...');
+    await Utils.execute('yarn', ['install'], { cwd: directory });
+    const lintFix = packageJSON.scripts?.['lint:fix'];
+    if (lintFix) await Utils.execute('yarn', ['lint:fix'], { cwd: directory });
+    //await Utils.execute('git', ['init'], { cwd: directory });
+    log('🏁  Finish!');
+    await Utils.execute('yarn', ['dev'], { cwd: directory });
   } catch (e) {
     console.error('ERROR', e);
   }

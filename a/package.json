@@ -1,0 +1,48 @@
+{
+  "name": "a",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "@reduxjs/toolkit": "1",
+    "react": "16",
+    "react-dom": "16",
+    "react-redux": "7",
+    "redux": "4"
+  },
+  "devDependencies": {
+    "@types/react": "16",
+    "@types/react-dom": "16",
+    "@types/react-redux": "7",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "@vitejs/plugin-react-refresh": "^1",
+    "chalk": "^4.1.1",
+    "electron": "^13.0.1",
+    "electron-builder": "^22.10.5",
+    "esbuild": "^0.12.5",
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-prettier": "latest",
+    "eslint-plugin-react": "latest",
+    "prettier": "latest",
+    "sass": "^1",
+    "stylelint": "latest",
+    "stylelint-config-prettier": "latest",
+    "stylelint-config-rational-order": "latest",
+    "stylelint-config-recommended-scss": "latest",
+    "stylelint-config-standard": "latest",
+    "stylelint-order": "latest",
+    "stylelint-prettier": "latest",
+    "stylelint-scss": "latest",
+    "typescript": "^4",
+    "vite": "^2"
+  },
+  "scripts": {
+    "lint": "prettier -c \"**/*.json\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\" && stylelint \"src/**/*{.css,.scss}\"",
+    "lint:fix": "prettier -w \"**/*.json\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\" --fix && stylelint \"src/**/*{.css,.scss}\" --fix",
+    "dev": "node scripts/dev",
+    "build": "tsc -p \"./src/main\" && tsc -p \"./src/renderer\" && node scripts/build --build",
+    "compile": "node scripts/build --compile",
+    "serve": "electron dist"
+  }
+}

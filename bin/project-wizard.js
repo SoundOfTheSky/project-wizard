@@ -69,7 +69,7 @@ async function create() {
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
+      message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
       pageSize: 8,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
@@ -86,7 +86,7 @@ async function create() {
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
+      message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
       pageSize: 8,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
@@ -103,7 +103,7 @@ async function create() {
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: ({ environment }) => (environment === 'electron' ? 'Renderer features:' : 'Frontend features:'),
+      message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
       pageSize: 8,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
@@ -140,22 +140,10 @@ async function create() {
       when: ({ environment }) => ['node', 'fullstack'].includes(environment),
     },
     {
-      name: 'backendFeatures',
-      type: 'checkbox',
-      message: 'Main process features:',
-      pageSize: 3,
-      choices: [
-        { name: '📘 TypeScript', value: 'typescript' },
-        { name: '🎨 ESLint', value: 'eslint', checked: true },
-        { name: '🎀 Prettier', value: 'prettier', checked: true },
-      ],
-      when: ({ environment }) => environment === 'electron',
-    },
-    {
       name: 'frontendPrettier',
       type: 'checkbox',
       message: ({ environment }) =>
-        environment === 'electron' ? 'UI prettier configuration:' : 'Frontend prettier configuration:',
+        environment === 'fullstack' ? 'Frontend prettier configuration:' : 'Prettier configuration:',
       pageSize: 7,
       when: ({ frontendFeatures }) => frontendFeatures?.includes('prettier'),
       choices: [
@@ -171,8 +159,7 @@ async function create() {
     {
       name: 'backendPrettier',
       type: 'checkbox',
-      message: ({ environment }) =>
-        environment === 'electron' ? 'Main process prettier configuration:' : 'Backend prettier configuration:',
+      message: 'Backend prettier configuration:',
       pageSize: 7,
       when: ({ backendFeatures }) => backendFeatures?.includes('prettier'),
       choices: [
