@@ -84,12 +84,13 @@ function getTemplate(f) {
       },
     },
     public: publicAssets,
-    'index.html': f.typescript ? '!index-ts.html' : '!index-js.html',
+    'index.html': '!index.html',
     '.gitignore': '!gitignore',
   };
-  const middlewares = [];
+  let entry = '/src/index.js';
+  const middlewares = [(t, dest) => (dest.endsWith('index.html') ? t.replace('%entry%', entry) : t)];
   if (f.framework === 'react') {
-    tree['index.html'] = f.typescript ? '!index-tsx.html' : '!index-jsx.html';
+    entry = f.typescript ? '/src/index.tsx' : '/src/index.jsx';
     tree.src = {
       'index.jsx': '!react/index.jsx',
       'index.css': '!react/index.css',
@@ -124,6 +125,41 @@ function getTemplate(f) {
     }
     if (f.typescript) tree.src['custom.d.ts'] = '!react/custom.d.ts';
   }
+  if (f.environment === 'electron') {
+    entry = entry.replace('/src', '');
+    tree.public['icon-linux.png'] = '!electron/icon-linux.png';
+    tree.public['icon-mac.png'] = '!electron/icon-mac.png';
+    tree.public['icon-windows.ico'] = '!electron/icon-windows.ico';
+    tree.scripts = {
+      'build.js': f.typescript ? '!electron/build-ts.js' : '!electron/build.js',
+      'dev.js': f.typescript ? '!electron/dev-ts.js' : '!electron/dev.js',
+      'onBuild.js': '!electron/onBuild.js',
+    };
+    tree.src = {
+      common: {},
+      main: {
+        'index.js': '!electron/index.js',
+      },
+      renderer: tree.src,
+    };
+    tree.src.renderer['index.html'] = tree['index.html'];
+    delete tree['index.html'];
+    // Transform @/ to @/renderer/
+    middlewares.push(
+      (t, dest) => {
+        if (
+          dest.includes(Path.normalize('src/renderer/')) &&
+          ['.js', '.ts', '.jsx', '.tsx', '.vue'].some(r => dest.endsWith(r))
+        ) {
+          const re = /import .*@\/(?!renderer)/;
+          let el;
+          while ((el = re.exec(t)) !== null) t = t.replace(el[0], el[0].replace('@/', '@/renderer/'));
+        }
+        return t;
+      },
+      (t, dest) => (dest.endsWith('index.html') ? t.replace('<title>App</title>', '') : t),
+    );
+  }
   // Transform all files from /.js/ to /.ts/
   if (f.typescript) {
     const r = t => {
@@ -135,7 +171,7 @@ function getTemplate(f) {
         }
       });
     };
-    r(tree);
+    r(tree.src);
   }
   // Transform all files from /.css/ to /.scss/
   // Middleware transform text 'import *.css' to 'import *.scss'

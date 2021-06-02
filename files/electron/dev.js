@@ -5,7 +5,7 @@ const path = require('path');
 const esbuild = require('esbuild');
 
 const DIST_PATH = path.join(process.cwd(), 'dist');
-const ENTRY_PATH = path.join(process.cwd(), 'src', 'main', 'index.ts');
+const ENTRY_PATH = path.join(process.cwd(), 'src', 'main', 'index.js');
 const VITE_CONFIG = path.join(process.cwd(), 'vite.config.js');
 const PREFIX = '[vite]';
 

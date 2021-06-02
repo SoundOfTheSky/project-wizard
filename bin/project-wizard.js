@@ -71,16 +71,17 @@ async function create() {
       type: 'checkbox',
       message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
       pageSize: 8,
-      choices: [
-        { name: '📘 TypeScript', value: 'typescript' },
-        { name: '💼 Redux', value: 'redux' },
-        { name: '🚀 Router', value: 'router' },
-        { name: '✨ SASS/SCSS', value: 'sass' },
-        new inquirer.Separator('=== Formatting ==='),
-        { name: '🎨 ESLint', value: 'eslint', checked: true },
-        { name: '🎀 Prettier', value: 'prettier', checked: true },
-        { name: '💎 StyleLint', value: 'stylelint', checked: true },
-      ],
+      choices: ({ environment }) =>
+        [
+          { name: '📘 TypeScript', value: 'typescript' },
+          { name: '💼 Redux', value: 'redux' },
+          environment !== 'electron' && { name: '🚀 Router', value: 'router' },
+          { name: '✨ SASS/SCSS', value: 'sass' },
+          new inquirer.Separator('=== Formatting ==='),
+          { name: '🎨 ESLint', value: 'eslint', checked: true },
+          { name: '🎀 Prettier', value: 'prettier', checked: true },
+          { name: '💎 StyleLint', value: 'stylelint', checked: true },
+        ].filter(Boolean),
       when: ({ frontendFramework }) => frontendFramework === 'react',
     },
     {

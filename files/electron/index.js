@@ -1,14 +1,11 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, protocol } from 'electron';
-import * as path from 'path';
+import { app, BrowserWindow } from 'electron';
 
 const isDevelopment = !app.isPackaged;
-console.log(process.env.mode);
-export let mainWindow: BrowserWindow;
-function createWindow(options: BrowserWindowConstructorOptions) {
+export let mainWindow;
+function createWindow(options) {
   const browserWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
-    titleBarStyle: 'hidden',
     webPreferences: {
       contextIsolation: true,
       devTools: true,
@@ -16,8 +13,11 @@ function createWindow(options: BrowserWindowConstructorOptions) {
     },
     ...options,
   });
-  if (isDevelopment) browserWindow.loadURL(`http://localhost:${process.env.PORT || 3000}`);
-  else browserWindow.loadFile('dist/index.html');
+  if (isDevelopment)
+    browserWindow
+      .loadURL(`http://localhost:${process.env.PORT || 3000}`)
+      .catch(() => browserWindow.loadFile('index.html'));
+  else browserWindow.loadFile('index.html');
   return browserWindow;
 }
 function bootstrap() {

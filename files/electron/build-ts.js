@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const { build } = require('vite');
 const esbuild = require('esbuild');
@@ -9,7 +10,8 @@ const PACKAGE_PATH = path.join(process.cwd(), 'package.json');
 const BUILDER_PACKAGE_PATH = path.join(DIST_PATH, 'package.json');
 const ICON_PATH = path.join(process.cwd(), 'public', 'icon-');
 const APP_PATH = path.join(DIST_PATH, 'app');
-const ENTRY_PATH = path.join(process.cwd(), 'src', 'main', 'index.js');
+const ENTRY_PATH = path.join(process.cwd(), 'src', 'main', 'index.ts');
+const TSCONFIG = path.join(process.cwd(), 'tsconfig.json');
 const VITE_CONFIG = path.join(process.cwd(), 'vite.config.js');
 async function main() {
   const args = process.argv.slice(2);
@@ -22,6 +24,7 @@ async function main() {
       await esbuild.build({
         outdir: DIST_PATH,
         entryPoints: [ENTRY_PATH],
+        tsconfig: TSCONFIG,
         format: 'cjs',
         platform: 'node',
       });

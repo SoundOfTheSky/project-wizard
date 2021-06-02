@@ -59,7 +59,7 @@ function prettyJSON(data, js) {
         if (jsi !== -1) {
           line = line.replace('"!js:', '');
           const lastI = line.lastIndexOf('"');
-          line = line.substring(0, lastI) + line.substring(lastI + 1);
+          line = (line.substring(0, lastI) + line.substring(lastI + 1)).replace(/\\\\/g, '\\').replace(/\\\\"/g, '"');
         }
         return line;
       })

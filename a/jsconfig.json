@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/main/*": ["src/main/*"],
+      "@/renderer/*": ["src/renderer/*"],
+      "@/common/*": ["src/common/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { createServer } = require('vite');
 const chalk = require('chalk');
 const onBuild = require('./onBuild');
@@ -6,6 +7,7 @@ const esbuild = require('esbuild');
 
 const DIST_PATH = path.join(process.cwd(), 'dist');
 const ENTRY_PATH = path.join(process.cwd(), 'src', 'main', 'index.ts');
+const TSCONFIG = path.join(process.cwd(), 'tsconfig.json');
 const VITE_CONFIG = path.join(process.cwd(), 'vite.config.js');
 const PREFIX = '[vite]';
 
@@ -24,6 +26,7 @@ async function esDev(onClose) {
     await esbuild.build({
       outdir: DIST_PATH,
       entryPoints: [ENTRY_PATH],
+      tsconfig: TSCONFIG,
       logLevel: 'silent',
       incremental: true,
       platform: 'node',

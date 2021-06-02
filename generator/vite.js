@@ -1,9 +1,10 @@
 const Utils = require('./utils');
 const Path = require('path');
 module.exports = async (options, packageJSON) => {
+  const typescript = options.features.includes('typescript');
   packageJSON.scripts.dev = 'vite';
   packageJSON.scripts.build = 'vite build';
-  packageJSON.scripts.serve = 'vite preview';
+  packageJSON.scripts.preview = 'vite preview';
   let prefix = `import path from 'path';\nimport { defineConfig } from 'vite';\n`;
   const config = {
     resolve: {
@@ -20,7 +21,7 @@ module.exports = async (options, packageJSON) => {
     config.plugins.push('!js:reactRefresh()');
     packageJSON.devDependencies['@vitejs/plugin-react-refresh'] = '^1';
     prefix += `import reactRefresh from '@vitejs/plugin-react-refresh';\n`;
-    if (options.features.includes('typescript')) packageJSON.scripts.build = 'tsc && vite build';
+    if (typescript) packageJSON.scripts.build = 'tsc && vite build';
   } else if (options.framework.startsWith('vue')) {
     if (!config.plugins) config.plugins = [];
     if (options.framework[3] === '3') {
@@ -33,11 +34,42 @@ module.exports = async (options, packageJSON) => {
       prefix += `import { createVuePlugin } from 'vite-plugin-vue2';\n`;
       config.plugins.push('!js:createVuePlugin({ jsx: true })');
     }
-    if (options.features.includes('typescript')) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
+    if (typescript) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
   }
-  if (options.browserTarget !== 'modules') {
+  if (options.environment === 'electron') {
+    if (!config.plugins) config.plugins = [];
+    config.plugins.push({
+      name: 'html-relative-modules',
+      transformIndexHtml: String.raw`!js:html => html.replace(/\"\/assets\//g, '\"./assets/')`,
+    });
+    config.root = './src/renderer';
+    if (!config.build) config.build = {};
+    config.build.outDir = '../../dist';
+    delete config.server;
+  }
+  if (options.target !== 'modules') {
     if (!config.build) config.build = {};
     config.build.target = options.target;
+    config.resolve.alias = [
+      {
+        find: '@/renderer',
+        replacement: `!js:path.resolve(__dirname, 'src/renderer')`,
+      },
+      {
+        find: '@/common',
+        replacement: `!js:path.resolve(__dirname, 'src/common')`,
+      },
+    ];
+    packageJSON.scripts.dev = 'node scripts/dev';
+    packageJSON.scripts.build =
+      (typescript ? 'tsc -p "./src/main" && tsc -p "./src/renderer" && ' : '') + 'node scripts/build --build';
+    packageJSON.scripts['compile:linux'] = 'node scripts/build -l';
+    packageJSON.scripts['compile:mac'] = 'node scripts/build -m';
+    packageJSON.scripts['compile:windows'] = 'node scripts/build -w';
+    packageJSON.scripts.preview = 'electron dist';
+    packageJSON.devDependencies['esbuild'] = 'latest';
+    packageJSON.devDependencies['electron'] = 'latest';
+    packageJSON.devDependencies['electron-builder'] = 'latest';
   }
   await Utils.createPath(
     Path.join(options.directory, 'vite.config.js'),

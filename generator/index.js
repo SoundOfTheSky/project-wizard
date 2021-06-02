@@ -13,20 +13,19 @@ async function createProject(options) {
     devDependencies: {},
     scripts: {},
   };
-  if (options.environment === 'browser') {
-    const template = Templates.getTemplate({
-      framework: options.framework,
-      sass: options.features.includes('sass'),
-      typescript: options.features.includes('typescript'),
-      router: options.features.includes('router'),
-      redux: options.features.includes('redux'),
-    });
-    console.log(template.tree);
-    await Utils.createTree(options.directory, template.tree, filesDirectory, async (t, dest) => {
-      for (const middleware of template.middlewares) t = await middleware(t, dest);
-      return t;
-    });
-  }
+  const template = Templates.getTemplate({
+    framework: options.framework,
+    environment: options.environment,
+    sass: options.features.includes('sass'),
+    typescript: options.features.includes('typescript'),
+    router: options.features.includes('router'),
+    redux: options.features.includes('redux'),
+  });
+  console.log(template.tree);
+  await Utils.createTree(options.directory, template.tree, filesDirectory, async (t, dest) => {
+    for (const middleware of template.middlewares) t = await middleware(t, dest);
+    return t;
+  });
   for (const name of ['prettier', 'eslint', 'stylelint', 'typescript', 'vite', 'features'])
     await require('./' + name)(options, packageJSON);
   await Utils.createPath(Path.join(options.directory, 'package.json'), Utils.prettyJSON(packageJSON));
@@ -41,7 +40,7 @@ module.exports = async function (options) {
       directory = Path.join(directory, options.name);
       if (!(await Utils.pathExists(directory))) await Utils.createPath(directory);
     }
-    const envPrefix = ['browser','electron'].includes(options.environment) ? 'frontend' : 'backend';
+    const envPrefix = ['browser', 'electron'].includes(options.environment) ? 'frontend' : 'backend';
     const features = options[envPrefix + 'Features'];
     const packageJSON = await createProject({
       directory,
