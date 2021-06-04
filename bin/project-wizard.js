@@ -40,8 +40,7 @@ async function create() {
       choices: [
         { name: '❌ None', value: 'none' },
         { name: '💙 React', value: 'react' },
-        { name: '💚 Vue 2', value: 'vue2' },
-        { name: '💚 Vue 3', value: 'vue3' },
+        { name: '💚 Vue', value: 'vue' },
       ],
       when: ({ environment }) => environment !== 'node',
     },

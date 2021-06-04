@@ -1,47 +1,41 @@
-const { createServer } = require('vite');
-const chalk = require('chalk');
-const onBuild = require('./onBuild');
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const esbuild = require('esbuild');
 
 const DIST_PATH = path.join(process.cwd(), 'dist');
-const ENTRY_PATH = path.join(process.cwd(), 'src', 'main', 'index.ts');
-const VITE_CONFIG = path.join(process.cwd(), 'vite.config.js');
-const PREFIX = '[vite]';
-
-async function startViteServer() {
-  const server = await createServer({
-    configFile: VITE_CONFIG,
-  });
-  await server.listen();
-  const address = server.httpServer.address();
-  if (typeof address === 'object')
-    console.log(chalk.green(PREFIX), chalk.green(`Dev server running at: localhost:${address.port}`));
-  return () => server.close();
+const ENTRY_PATH = path.join(process.cwd(), 'src', 'index.ts');
+const TSCONFIG = path.join(process.cwd(), 'tsconfig.json');
+async function onBuild() {
+  console.log(await require('../dist').createApp);
 }
-async function esDev(onClose) {
+const externals = require('./externals');
+async function esDev() {
   try {
     await esbuild.build({
       outdir: DIST_PATH,
       entryPoints: [ENTRY_PATH],
+      tsconfig: TSCONFIG,
       logLevel: 'silent',
       incremental: true,
       platform: 'node',
       format: 'cjs',
+      bundle: true,
+      external:externals.external,
       watch: {
         onRebuild: error => {
+          console.log('rebuilt');
           if (error) console.error(error);
-          else onBuild(DIST_PATH, onClose);
+          else onBuild(DIST_PATH);
         },
       },
     });
-    onBuild(DIST_PATH, onClose);
+    console.log('built');
+    onBuild(DIST_PATH);
   } catch (e) {
     if (e.errors && e?.errors?.length > 0) console.error(e);
   }
 }
 async function main() {
-  const onClose = await startViteServer();
-  await esDev(onClose);
+  await esDev();
 }
 main();

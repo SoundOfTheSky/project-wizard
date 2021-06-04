@@ -1,27 +1,44 @@
 import path from 'path';
 import { defineConfig } from 'vite';
+import { VitePluginNode } from 'vite-plugin-node';
 
 export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "@/renderer",
-        replacement: path.resolve(__dirname, 'src/renderer')
+        find: '@',
+        replacement: path.resolve(__dirname, 'src'),
       },
-      {
-        find: "@/common",
-        replacement: path.resolve(__dirname, 'src/common')
-      }
-    ]
+    ],
+  },
+  build: {
+    rollupOptions: {
+      external: [
+        '@nestjs/microservices',
+        '@nestjs/microservices/microservices-module',
+        '@nestjs/websockets/socket-module',
+        'class-transformer',
+        'class-validator',
+        'cache-manager',
+      ],
+    },
   },
   plugins: [
-    {
-      name: "html-relative-modules",
-      transformIndexHtml: html => html.replace(/"\/assets\//g, '"./assets/')
-    }
+    ...VitePluginNode({
+      server: 'nest',
+      appPath: './index.ts',
+      port: 3000,
+      tsCompiler: 'swc',
+    }),
   ],
-  root: "./src/renderer",
-  build: {
-    outDir: "../../dist"
-  }
+  ssr: {
+    external: [
+      '@nestjs/microservices',
+      '@nestjs/microservices/microservices-module',
+      '@nestjs/websockets/socket-module',
+      'class-transformer',
+      'class-validator',
+      'cache-manager',
+    ],
+  },
 });

@@ -2,31 +2,36 @@
   "name": "a",
   "version": "1.0.0",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@nestjs/common": "^7.6.17",
+    "@nestjs/core": "^7.6.17",
+    "@nestjs/platform-express": "^7.6.17",
+    "cookie-parser": "^1.4.5",
+    "imagemin": "^8.0.0",
+    "imagemin-gifsicle": "^7.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.1.0"
+  },
   "devDependencies": {
-    "prettier": "latest",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/imagemin": "^7.0.0",
+    "@types/imagemin-gifsicle": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "eslint": "latest",
-    "eslint-plugin-prettier": "latest",
     "eslint-config-prettier": "latest",
-    "stylelint": "latest",
-    "stylelint-config-rational-order": "latest",
-    "stylelint-config-standard": "latest",
-    "stylelint-order": "latest",
-    "stylelint-prettier": "latest",
-    "stylelint-config-prettier": "latest",
+    "eslint-plugin-prettier": "latest",
+    "prettier": "latest",
+    "typescript": "latest",
     "vite": "^2",
-    "esbuild": "latest",
-    "electron": "latest",
-    "electron-builder": "latest"
+    "vite-plugin-commonjs-externals": "^0.1.1",
+    "vite-plugin-node": "^0.0.8"
   },
   "scripts": {
-    "lint": "prettier -c \"**/*.json\" && eslint \"src/**/*{.js,.jsx}\" && stylelint \"src/**/*.css\"",
-    "lint:fix": "prettier -w \"**/*.json\" && eslint \"src/**/*{.js,.jsx}\" --fix && stylelint \"src/**/*.css\" --fix",
-    "dev": "node scripts/dev",
-    "build": "node scripts/build --build",
-    "preview": "electron dist",
-    "compile:linux": "node scripts/build -l",
-    "compile:mac": "node scripts/build -m",
-    "compile:windows": "node scripts/build -w"
+    "lint": "prettier -c \"**/*.json\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\"",
+    "lint:fix": "prettier -w \"**/*.json\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\" --fix",
+    "dev": "vite-node",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }

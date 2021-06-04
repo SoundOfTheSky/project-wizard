@@ -27,7 +27,7 @@ async function main() {
       });
       const package = require(PACKAGE_PATH);
       /*
-       * Do not install dependencies.
+       * Do not include dependencies in compiled.
        * If you need some dependencies to be included
        * rewrite logic below, to leave only needed dependencies in package
        * and remove "beforeBuild: () => false," in builderConfig

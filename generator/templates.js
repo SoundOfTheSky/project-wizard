@@ -2,78 +2,6 @@ const Path = require('path');
 const publicAssets = {
   'favicon.ico': '!favicon.ico',
 };
-const react = {
-  src: '!react',
-  public: publicAssets,
-  'index.html': '!index_jsx.html',
-  '.gitignore': '!gitignore',
-};
-const reactTS = {
-  src: '!react-ts',
-  public: publicAssets,
-  'index.html': '!index_tsx.html',
-  '.gitignore': '!gitignore',
-};
-const reactTSRedux = {
-  ...reactTS,
-  src: '!react-ts-redux',
-};
-const reactTSReduxRouter = {
-  ...reactTS,
-  src: '!react-ts-redux-router',
-};
-const reactTSRouter = {
-  ...reactTS,
-  src: '!react-ts-router',
-};
-const reactRedux = {
-  ...react,
-  src: '!react-redux',
-};
-const reactReduxRouter = {
-  ...react,
-  src: '!react-redux-router',
-};
-const reactRouter = {
-  ...react,
-  src: '!react-router',
-};
-const vue2 = {
-  src: '!vue',
-  public: publicAssets,
-  'index.html': '!index_js.html',
-  '.gitignore': '!gitignore',
-};
-const vue2TS = {
-  src: '!vue-ts',
-  public: publicAssets,
-  'index.html': '!index_ts.html',
-  '.gitignore': '!gitignore',
-};
-const vue2TSVuex = {
-  ...vue2TS,
-  src: '!vue-ts',
-};
-const vue2TSVuexRouter = {
-  ...vue2TS,
-  src: '!vue-ts',
-};
-const vue2TSRouter = {
-  ...vue2TS,
-  src: '!vue-ts',
-};
-const vue2Vuex = {
-  ...vue2,
-  src: '!vue',
-};
-const vue2VuexRouter = {
-  ...vue2,
-  src: '!vue2-vuex-router',
-};
-const vue2Router = {
-  ...vue2,
-  src: '!vue',
-};
 function getTemplate(f) {
   let tree = {
     src: {
@@ -90,7 +18,7 @@ function getTemplate(f) {
   let entry = '/src/index.js';
   const middlewares = [(t, dest) => (dest.endsWith('index.html') ? t.replace('%entry%', entry) : t)];
   if (f.framework === 'react') {
-    entry = f.typescript ? '/src/index.tsx' : '/src/index.jsx';
+    entry = '/src/index.jsx';
     tree.src = {
       'index.jsx': '!react/index.jsx',
       'index.css': '!react/index.css',
@@ -160,8 +88,8 @@ function getTemplate(f) {
       (t, dest) => (dest.endsWith('index.html') ? t.replace('<title>App</title>', '') : t),
     );
   }
-  // Transform all files from /.js/ to /.ts/
   if (f.typescript) {
+    // Transform all files from /.js/ to /.ts/
     const r = t => {
       Object.keys(t).forEach(k => {
         if (typeof t[k] !== 'string') r(t[k]);
@@ -172,10 +100,19 @@ function getTemplate(f) {
       });
     };
     r(tree.src);
+    // Transform all '.js' imports to '.ts' imports
+    middlewares.push((t, dest) => {
+      if (['.js', '.ts', '.jsx', '.tsx', '.vue'].some(r => dest.endsWith(r))) {
+        const re = /import .*\.js/;
+        let el;
+        while ((el = re.exec(t)) !== null) t = t.replace(el[0], el[0].replace('.js', '.ts'));
+      }
+      return t;
+    });
+    entry = entry.replace('.js', '.ts');
   }
-  // Transform all files from /.css/ to /.scss/
-  // Middleware transform text 'import *.css' to 'import *.scss'
   if (f.sass) {
+    // Transform all files from /.css/ to /.scss/
     const r = t => {
       Object.keys(t).forEach(k => {
         if (typeof t[k] !== 'string') r(t[k]);
@@ -186,6 +123,7 @@ function getTemplate(f) {
       });
     };
     r(tree);
+    // Middleware transform text 'import *.css' to 'import *.scss'
     middlewares.push((t, dest) => {
       if (['.js', '.ts', '.jsx', '.tsx', '.vue'].some(r => dest.endsWith(r))) {
         const re = /import .*\.css/;
@@ -199,22 +137,5 @@ function getTemplate(f) {
 }
 module.exports = {
   publicAssets,
-  electron: {},
-  react,
-  reactRedux,
-  reactReduxRouter,
-  reactRouter,
-  reactTS,
-  reactTSRedux,
-  reactTSReduxRouter,
-  reactTSRouter,
-  vue2,
-  vue2TS,
-  vue2TSVuex,
-  vue2TSVuexRouter,
-  vue2TSRouter,
-  vue2Vuex,
-  vue2VuexRouter,
-  vue2Router,
   getTemplate,
 };
