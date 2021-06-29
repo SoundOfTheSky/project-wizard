@@ -1,41 +1,52 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const ts = require('typescript');
+const { spawn } = require('child_process');
 const path = require('path');
-const esbuild = require('esbuild');
-
-const DIST_PATH = path.join(process.cwd(), 'dist');
-const ENTRY_PATH = path.join(process.cwd(), 'src', 'index.ts');
-const TSCONFIG = path.join(process.cwd(), 'tsconfig.json');
-async function onBuild() {
-  console.log(await require('../dist').createApp);
+const DIST_PATH = path.join(__dirname, '../dist');
+const formatHost = {
+  getCanonicalFileName: path => path,
+  getCurrentDirectory: ts.sys.getCurrentDirectory,
+  getNewLine: () => ts.sys.newLine,
+};
+function on(host, functionName, before, after) {
+  const originalFunction = host[functionName];
+  host[functionName] = function () {
+    before && before(...arguments);
+    const result = originalFunction && originalFunction(...arguments);
+    after && after(result);
+    return result;
+  };
 }
-const externals = require('./externals');
-async function esDev() {
-  try {
-    await esbuild.build({
-      outdir: DIST_PATH,
-      entryPoints: [ENTRY_PATH],
-      tsconfig: TSCONFIG,
-      logLevel: 'silent',
-      incremental: true,
-      platform: 'node',
-      format: 'cjs',
-      bundle: true,
-      external:externals.external,
-      watch: {
-        onRebuild: error => {
-          console.log('rebuilt');
-          if (error) console.error(error);
-          else onBuild(DIST_PATH);
-        },
-      },
+function watch() {
+  const host = ts.createWatchCompilerHost(
+    ts.findConfigFile('../', ts.sys.fileExists, 'tsconfig.json'),
+    {},
+    ts.sys,
+    ts.createEmitAndSemanticDiagnosticsBuilderProgram,
+    diagnostic => console.log(ts.formatDiagnosticsWithColorAndContext([diagnostic], formatHost)),
+    diagnostic => console.log(ts.formatDiagnosticsWithColorAndContext([diagnostic], formatHost)),
+  );
+  let nodeProcess;
+  let exitByScripts;
+  on(host, 'afterProgramCreate', undefined, async () => {
+    if (nodeProcess) {
+      process.kill(nodeProcess.pid);
+      exitByScripts = true;
+      nodeProcess = null;
+      await new Promise(r => setTimeout(r, 500));
+    }
+    nodeProcess = spawn('node', [DIST_PATH]);
+    nodeProcess.on('exit', async code => {
+      if (exitByScripts) return;
+      console.log(`Backend exited with code ${code}`);
+      //await onClose();
+      process.exit();
     });
-    console.log('built');
-    onBuild(DIST_PATH);
-  } catch (e) {
-    if (e.errors && e?.errors?.length > 0) console.error(e);
-  }
+    nodeProcess.stdout.pipe(process.stdout);
+    nodeProcess.stderr.pipe(process.stderr);
+    exitByScripts = false;
+  });
+  ts.createWatchProgram(host);
 }
-async function main() {
-  await esDev();
-}
-main();
+
+watch();

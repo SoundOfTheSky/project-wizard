@@ -1,11 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 import { GlobalGuard } from './global.guard';
-import imagemin from 'imagemin';
-import imageminGifsicle from 'imagemin-gifsicle';
-async function bootstrap() { 
-  console.log(imagemin, imageminGifsicle);
+import * as gifsicle from 'imagemin-gifsicle';
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.enableCors();
@@ -13,7 +11,6 @@ async function bootstrap() {
   // Anti ddos
   app.useGlobalGuards(new GlobalGuard());
   await app.listen(3000);
-  console.log('working!');
+  console.log(gifsicle);
 }
 bootstrap();
-export const createApp = NestFactory.create(AppModule);

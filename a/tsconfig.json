@@ -1,26 +1,27 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "ESNext",
+    "target": "ES2017",
     "lib": ["ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "importHelpers": true,
     "removeComments": true,
     "noImplicitReturns": true,
-    "noEmit": true,
     "experimentalDecorators": true,
+    "noUnusedLocals": false,
+    "outDir": "./dist",
+    "emitDecoratorMetadata": true,
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
   },
   "exclude": ["node_modules", "dist"]
 }
