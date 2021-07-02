@@ -41,13 +41,12 @@ module.exports = async function (options) {
       if (!(await Utils.pathExists(directory))) await Utils.createPath(directory);
     }
     const envPrefix = ['browser', 'electron'].includes(options.environment) ? 'frontend' : 'backend';
-    const features = options[envPrefix + 'Features'];
     const packageJSON = await createProject({
       directory,
       name: options.name,
       environment: options.environment,
       framework: options[envPrefix + 'Framework'],
-      features,
+      features: options[envPrefix + 'Features'],
       target: options[options.environment + 'Target'],
       prettier: options[envPrefix + 'Prettier'],
     });

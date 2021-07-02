@@ -87,6 +87,7 @@ function getTemplate(f) {
       },
       (t, dest) => (dest.endsWith('index.html') ? t.replace('<title>App</title>', '') : t),
     );
+  } else if (f.environment === 'node') {
   }
   if (f.typescript) {
     // Transform all files from /.js/ to /.ts/
