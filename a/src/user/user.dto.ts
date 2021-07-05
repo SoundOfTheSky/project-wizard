@@ -1,15 +1,16 @@
-export interface RegisterDTO {
+export type RegisterDTO = {
   login: string;
   password: string;
   email: string;
-}
-export interface LoginDTO {
+};
+export type LoginDTO = {
   login?: string;
   email?: string;
   password: string;
-}
-export interface ChangePasswordDTO {
-  email: string;
+};
+export type ChangePasswordDTO = {
+  login?: string;
+  email?: string;
   oldPassword: string;
   newPassword: string;
-}
+};

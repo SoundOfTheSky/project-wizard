@@ -1,94 +1,118 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { SHA256 } from 'crypto-js';
-import { Model } from 'mongoose';
-import { register, login, changePassword } from './user.dto';
-import { UserDocument, User } from './user.schema';
+import { RegisterDTO, LoginDTO, ChangePasswordDTO } from './user.dto';
 import { sign, verify } from 'jsonwebtoken';
-import * as mail from '../mail';
-import config from '../config';
-import { mutateObjectTrimStrings, v } from '../utils';
+import { secret } from '../config';
+
+function mutateObjectTrimStrings(data: { [key: string]: unknown }) {
+  (Object.keys(data) as Array<keyof typeof data>).forEach(
+    key => typeof data[key] === 'string' && ((data[key] as string) = (data[key] as string).trim()),
+  );
+}
+export interface User {
+  login: string;
+  email: string;
+  password: string;
+  role: 'unconfirmed' | 'user';
+}
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  list: User[] = [];
   generateAuthToken(user: { email: string; role: string }) {
-    return sign({ email: user.email, role: user.role }, config.secret, {
+    return sign({ email: user.email, role: user.role }, secret, {
       expiresIn: '14d',
     });
   }
-  async getAll() {
-    return await this.userModel.find();
+  getAll() {
+    return this.list;
   }
-  async create(data: register) {
+  create(data: RegisterDTO) {
     mutateObjectTrimStrings(data);
-    if (!v(/^[А-ЯA-ZЁ][а-яa-zё]{2,23}$/u, data.name)) throw new BadRequestException('Name is invalid');
-    if (!v(/^[А-ЯA-ZЁ][а-яa-zё]{2,23}$/u, data.surname)) throw new BadRequestException('Surname is invalid');
-    if (!v(/^\S{6,32}$/, data.password)) throw new BadRequestException('Password is invalid');
-    if (!v(/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i, data.email))
+    if (typeof data.login !== 'string' || !/^[a-z]{2,24}$/i.test(data.login))
+      throw new BadRequestException('Login is invalid');
+    if (typeof data.password !== 'string' || !/^\S{6,32}$/.test(data.password))
+      throw new BadRequestException('Password is invalid');
+    if (
+      typeof data.email !== 'string' ||
+      !/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i.test(data.email)
+    )
       throw new BadRequestException('Email is invalid');
-    const user = await this.userModel.findOne({ email: data.email }, 'role');
+    const user = this.list.find(u => u.email === data.email);
     if (user) {
       if (user.role === 'unconfirmed') throw new BadRequestException('Unconfirmed user taken this email');
       throw new BadRequestException('Email is already taken');
     }
-    await new this.userModel({ ...data, password: SHA256(data.password).toString() }).save();
+    this.list.push({ ...data, password: SHA256(data.password).toString(), role: 'unconfirmed' });
     return true;
   }
-  async sendMailAccountConfirmation(email: string, password?: string) {
+  async sendMailAccountConfirmation(email: string) {
     email = email.trim();
-    password = password === undefined ? undefined : password.trim();
-    if (!v(/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i, email))
+    if (
+      typeof email !== 'string' ||
+      !/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i.test(email)
+    )
       throw new BadRequestException('Email is invalid');
-    if (!v(/^\S{6,32}$/, password)) throw new BadRequestException('Password is invalid');
-    const user = await this.userModel.findOne({ email }, 'name surname');
+    const user = this.list.find(u => u.email === email);
     if (!user) throw new BadRequestException('Email not found');
-    mail.sendConfirmation(
+    // Send mail
+    console.log(
       email,
-      `${user.name} ${user.surname}`,
-      sign({ email }, config.secret, {
+      sign({ email }, secret, {
         expiresIn: '1h',
       }),
-      password,
     );
   }
-  async mailAccountConfirmation(token: string, password: string) {
-    password = password === undefined ? undefined : password.trim();
-    if (!v(/^\S{6,32}$/, password, 'string', true)) throw new BadRequestException('Password is invalid');
+  async mailAccountConfirmation(token: string) {
     try {
-      const email = (verify(token, config.secret) as { email: string }).email;
-      const user = await this.userModel.findOne({ email }, 'role');
+      if (!token) throw new BadRequestException('No token');
+      const email = (verify(token, secret) as { email: string }).email;
+      const user = this.list.find(u => u.email === email);
       if (!user) throw new BadRequestException('Email not found');
       if (user.role === 'unconfirmed') user.role = 'user';
-      if (password) user.password = SHA256(password).toString();
-      await user.save();
     } catch {
       throw new BadRequestException('Wrong token');
     }
   }
-  async login(data: login) {
+  async login(data: LoginDTO) {
     mutateObjectTrimStrings(data);
-    if (!v(/^\S{6,32}$/, data.password)) throw new BadRequestException('Password is invalid');
-    if (!v(/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i, data.email))
+    if (typeof data.email !== 'string' && typeof data.login !== 'string')
+      throw new BadRequestException('Needs either login or email to be passed');
+    if (typeof data.password !== 'string' || !/^\S{6,32}$/.test(data.password))
+      throw new BadRequestException('Password is invalid');
+    if (
+      typeof data.email === 'string' &&
+      !/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i.test(data.email)
+    )
       throw new BadRequestException('Email is invalid');
-    const user = await this.userModel.findOne(
-      { email: data.email, password: SHA256(data.password).toString() },
-      'role',
+    if (typeof data.login === 'string' && !/^[a-z]{2,24}$/i.test(data.login))
+      throw new BadRequestException('Login is invalid');
+    const user = this.list.find(
+      u =>
+        (data.email ? u.email === data.email : u.login === data.login) &&
+        u.password === SHA256(data.password).toString(),
     );
     if (!user) throw new BadRequestException('Not found');
-    return this.generateAuthToken({ email: data.email, role: user.role });
+    return this.generateAuthToken({ email: user.email, role: user.role });
   }
-  async changePassword(data: changePassword) {
+  async changePassword(data: ChangePasswordDTO) {
     mutateObjectTrimStrings(data);
-    if (!v(/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i, data.email))
+    if (typeof data.email !== 'string' && typeof data.login !== 'string')
+      throw new BadRequestException('Needs either login or email to be passed');
+    if (
+      typeof data.email === 'string' &&
+      !/^[a-z\d][a-z\d.!#$%&'*+-=?^_`{|]{2,30}[a-z\d]@[a-z\d]{2,16}.[a-z]{2,3}$/i.test(data.email)
+    )
       throw new BadRequestException('Email is invalid');
-    if (!v(/^\S{6,32}$/, data.oldPassword)) throw new BadRequestException('Old password is invalid');
-    if (!v(/^\S{6,32}$/, data.newPassword)) throw new BadRequestException('New password is invalid');
-    const user = await this.userModel.findOne(
-      { email: data.email, password: SHA256(data.oldPassword).toString() },
-      'password',
+    if (typeof data.login === 'string' && !/^[a-z]{2,24}$/i.test(data.login))
+      throw new BadRequestException('Login is invalid');
+    if (!/^\S{6,32}$/.test(data.oldPassword)) throw new BadRequestException('Old password is invalid');
+    if (!/^\S{6,32}$/.test(data.newPassword)) throw new BadRequestException('New password is invalid');
+    const user = this.list.find(
+      u =>
+        (data.email ? u.email === data.email : u.login === data.login) &&
+        u.password === SHA256(data.oldPassword).toString(),
     );
     if (!user) throw new BadRequestException('Not found');
     user.password = SHA256(data.newPassword).toString();
-    await user.save();
   }
 }
