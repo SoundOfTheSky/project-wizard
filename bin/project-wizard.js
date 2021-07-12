@@ -98,7 +98,7 @@ async function create() {
         { name: '🎀 Prettier', value: 'prettier', checked: true },
         { name: '💎 StyleLint', value: 'stylelint', checked: true },
       ],
-      when: ({ frontendFramework }) => frontendFramework.startsWith('vue'),
+      when: ({ frontendFramework }) => frontendFramework === 'vue',
     },
     {
       name: 'frontendFeatures',

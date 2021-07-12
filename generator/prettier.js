@@ -3,10 +3,18 @@ const Path = require('path');
 module.exports = async (options, packageJSON) => {
   if (!options.features.includes('prettier')) return;
   packageJSON.devDependencies['prettier'] = 'latest';
-  if (packageJSON.scripts.lint) packageJSON.scripts.lint += ' && prettier -c "**/*.json"';
-  else packageJSON.scripts.lint = 'prettier -c "**/*.json"';
-  if (packageJSON.scripts['lint:fix']) packageJSON.scripts['lint:fix'] += 'prettier -w "**/*.json"';
-  else packageJSON.scripts['lint:fix'] = 'prettier -w "**/*.json"';
+  const extensions = ['.js', '.json'];
+  if (['browser', 'electron'].includes(options.environment)) extensions.push('.jsx');
+  if (options.features.includes('typescript')) {
+    extensions.push('.ts');
+    if (extensions.includes('.jsx')) extensions.push('.tsx');
+  }
+  if (options.framework === 'vue') extensions.push('.vue');
+  const cmd = `prettier -c "**/*${extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0]}"`;
+  if (packageJSON.scripts.lint) packageJSON.scripts.lint += ' && ' + cmd;
+  else packageJSON.scripts.lint = cmd;
+  if (packageJSON.scripts['lint:fix']) packageJSON.scripts['lint:fix'] += ' && ' + cmd.replace('-c', '-w');
+  else packageJSON.scripts['lint:fix'] = cmd.replace('-c', '-w');
   return Utils.createPath(
     Path.join(options.directory, '.prettierrc.js'),
     'module.exports = ' +

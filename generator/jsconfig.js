@@ -32,8 +32,6 @@ module.exports = async (options, packageJSON) => {
         allowJs: false,
         // Dont check all node_modules for types
         skipLibCheck: true, // vite false
-        // Import non-ES modules as default imports.
-        esModuleInterop: false, // !!!vite false!!!
         // Allow import modules without *
         allowSyntheticDefaultImports: true,
         // Stronger type checking
@@ -46,7 +44,7 @@ module.exports = async (options, packageJSON) => {
         moduleResolution: 'Node',
         // Import JSON as modules
         resolveJsonModule: true,
-        // Warn if you write something that vite can't build
+        // Warn if you write something that vite can't build. I guess it's not needed then using typescript compiler...
         isolatedModules: true,
         // Don't reuse code, just add it from node_modules
         importHelpers: true,
@@ -54,6 +52,11 @@ module.exports = async (options, packageJSON) => {
         removeComments: true,
         // Always use return for returning from function
         noImplicitReturns: true,
+        // Allow unused locals to build it anyway
+        noUnusedLocals: false,
+        // Decorators
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true,
         // Don't emit files
         noEmit: true,
         // ES6 decorators support
@@ -76,7 +79,11 @@ module.exports = async (options, packageJSON) => {
     } else if (target === 'node') {
       // Transform imports to requires
       tsconfig.compilerOptions.module = 'CommonJS';
+      // Enable ts compiler as bundler
+      delete tsconfig.compilerOptions.noEmit;
+      tsconfig.compilerOptions.outDir = './dist';
       if (options.environment !== 'node') {
+        // I don't remember why...
         delete tsconfig.compilerOptions.paths[Object.keys(tsconfig.compilerOptions.paths)[1]];
         tsconfig.extends = '../../tsconfig.json';
         tsconfig.compilerOptions.baseUrl = '../..';

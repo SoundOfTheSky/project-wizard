@@ -1,25 +1,39 @@
-module.exports = async (options, packagejson) => {
+module.exports = async (options, packageJSON) => {
   const typescript = options.features.includes('typescript');
   if (options.framework === 'react') {
-    packagejson.dependencies['react'] = '16';
-    packagejson.dependencies['react-dom'] = '16';
+    packageJSON.dependencies['react'] = '16';
+    packageJSON.dependencies['react-dom'] = '16';
     if (typescript) {
-      packagejson.devDependencies['@types/react'] = '16';
-      packagejson.devDependencies['@types/react-dom'] = '16';
-    } else packagejson.dependencies['prop-types'] = '15';
-  } else if (options.framework.startsWith('vue'))
-    packagejson.dependencies['vue'] = options.framework[3] === '3' ? '3' : '2';
+      packageJSON.devDependencies['@types/react'] = '16';
+      packageJSON.devDependencies['@types/react-dom'] = '16';
+    } else packageJSON.dependencies['prop-types'] = '15';
+  } else if (options.framework === 'vue') packageJSON.dependencies['vue'] = options.framework[3] === '3' ? '3' : '2';
+  else if (options.framework === 'nest') {
+    packageJSON.dependencies['@nestjs/common'] = 'latest';
+    packageJSON.dependencies['@nestjs/core'] = 'latest';
+    packageJSON.dependencies['@nestjs/platform-express'] = 'latest';
+    packageJSON.dependencies['@nestjs/serve-static'] = 'latest';
+    packageJSON.dependencies['reflect-metadata'] = 'latest';
+    packageJSON.dependencies['rxjs'] = 'latest';
+    packageJSON.dependencies['cookie-parser'] = 'latest';
+    packageJSON.dependencies['crypto-js'] = 'latest';
+    packageJSON.dependencies['jsonwebtoken'] = 'latest';
+    if (typescript) {
+      packageJSON.devDependencies['@types/cookie-parser'] = 'latest';
+      packageJSON.devDependencies['@types/jsonwebtoken'] = 'latest';
+    }
+  }
   if (options.features.includes('redux')) {
-    if (options.framework === 'react') packagejson.dependencies['react-redux'] = '7';
-    packagejson.dependencies['redux'] = '4';
-    packagejson.dependencies['@reduxjs/toolkit'] = '1';
-    if (typescript) packagejson.devDependencies['@types/react-redux'] = '7';
+    if (options.framework === 'react') packageJSON.dependencies['react-redux'] = '7';
+    packageJSON.dependencies['redux'] = '4';
+    packageJSON.dependencies['@reduxjs/toolkit'] = '1';
+    if (typescript) packageJSON.devDependencies['@types/react-redux'] = '7';
   }
   if (options.features.includes('router')) {
     if (options.framework === 'react') {
-      packagejson.dependencies['react-router-dom'] = '5';
-      if (typescript) packagejson.devDependencies['@types/react-router-dom'] = '5';
-    } else if (options.framework.startsWith('vue')) packagejson.dependencies['vue-router'] = '3';
+      packageJSON.dependencies['react-router-dom'] = '5';
+      if (typescript) packageJSON.devDependencies['@types/react-router-dom'] = '5';
+    } else if (options.framework === 'vue') packageJSON.dependencies['vue-router'] = '3';
   }
-  if (options.features.includes('vuex')) packagejson.dependencies['vuex'] = '3';
+  if (options.features.includes('vuex')) packageJSON.dependencies['vuex'] = '3';
 };

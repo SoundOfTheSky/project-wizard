@@ -6,7 +6,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
  * If more than 120 requests in one minute, then send errors.
  */
 @Injectable()
-export class GlobalGuard implements CanActivate {
+export class GlobalGuard {
   constructor() {
     // Garbage collection
     setInterval(() => {
@@ -28,8 +28,8 @@ export class GlobalGuard implements CanActivate {
   // Garbage collection may lag a server if a lot of users!!!
   garbageCollectionInterval = 24 * 60 * 60 * 1000;
 
-  ips: { [key: string]: number[] } = {};
-  canActivate(context: ExecutionContext): Promise<boolean> {
+  ips = {};
+  canActivate(context) {
     return new Promise(r => {
       const ip = context.switchToHttp().getRequest().ip;
       this.ips[ip] = (this.ips[ip] || []).filter(el => Date.now() - el < this.countRequestsInterval);

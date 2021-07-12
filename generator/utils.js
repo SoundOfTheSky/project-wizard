@@ -53,8 +53,10 @@ function prettyJSON(data, js) {
       .split('\n')
       .map(line => {
         const i = line.indexOf('":');
+        // If line contains key, and it contains only letters, remove quotation marks
         if (i !== -1 && /^[\w]+$/.test(line.substring(line.indexOf('"') + 1, i)))
           line = line.replace('"', '').replace('"', '');
+        // If line contains "!js:" code mark, remove mark, remove quotation marks, and remove A LOT OF INCORRECT ESCAPES, WHYYYY
         const jsi = line.indexOf('"!js:');
         if (jsi !== -1) {
           line = line.replace('"!js:', '');
@@ -66,6 +68,7 @@ function prettyJSON(data, js) {
       .join('\n');
   return str;
 }
+// Function from Vue CLI that renders yarn progress bar correctly inside execa process.
 function renderProgressBar(curr, total) {
   const bar = ` ${curr}/${total}`;
   const width = Math.min(total, Math.max(0, process.stderr.columns - bar.length - 3));

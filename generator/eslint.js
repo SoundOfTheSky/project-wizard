@@ -2,7 +2,7 @@ const Utils = require('./utils');
 const Path = require('path');
 module.exports = async (options, packageJSON) => {
   if (!options.features.includes('eslint')) return;
-  const jsResolvables = ['.js', '.jsx'];
+  const extensions = ['.js'];
   packageJSON.devDependencies['eslint'] = 'latest';
   const eslintConfig = {
     root: true,
@@ -21,6 +21,10 @@ module.exports = async (options, packageJSON) => {
     packageJSON.devDependencies['eslint-config-prettier'] = 'latest';
     eslintConfig.rules['prettier/prettier'] = 1;
   }
+  if (['browser', 'electron'].includes(options.environment)) {
+    extensions.push('.jsx');
+    eslintConfig.parserOptions.ecmaFeatures = { jsx: true };
+  }
   if (options.features.includes('typescript')) {
     packageJSON.devDependencies['@typescript-eslint/parser'] = 'latest';
     packageJSON.devDependencies['@typescript-eslint/eslint-plugin'] = 'latest';
@@ -28,23 +32,23 @@ module.exports = async (options, packageJSON) => {
     eslintConfig.extends.push('plugin:@typescript-eslint/recommended');
     if (prettierEnabled) eslintConfig.extends.push('prettier');
     eslintConfig.rules['@typescript-eslint/explicit-module-boundary-types'] = 0;
-    jsResolvables.push('.ts', '.tsx');
+    extensions.push('.ts');
+    if (extensions.includes('.jsx')) extensions.push('.tsx');
   }
   if (options.framework === 'react') {
     packageJSON.devDependencies['eslint-plugin-react'] = 'latest';
     eslintConfig.settings = { react: { version: 'detect' } };
-    eslintConfig.parserOptions.ecmaFeatures = { jsx: true };
     eslintConfig.extends.unshift('plugin:react/recommended');
-  } else if (options.framework.startsWith('vue')) {
+  } else if (options.framework === 'vue') {
     packageJSON.devDependencies['vue-eslint-parser'] = 'latest';
     packageJSON.devDependencies['eslint-plugin-vue'] = 'latest';
     eslintConfig.extends.unshift('plugin:vue/' + (options.framework[3] === '3' ? 'vue3-recommended' : 'recommended'));
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
     eslintConfig.parser = 'vue-eslint-parser';
-    jsResolvables.push('.vue');
+    extensions.push('.vue');
   }
   if (prettierEnabled) eslintConfig.extends.push('plugin:prettier/recommended');
-  const cmd = `eslint "src/**/*{${jsResolvables.join(',')}}"`;
+  const cmd = `eslint "src/**/*${extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0]}"`;
   if (packageJSON.scripts.lint) packageJSON.scripts.lint += ' && ' + cmd;
   else packageJSON.scripts.lint = cmd;
   if (packageJSON.scripts['lint:fix']) packageJSON.scripts['lint:fix'] += ' && ' + cmd + ' --fix';

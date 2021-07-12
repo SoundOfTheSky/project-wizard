@@ -2,7 +2,7 @@ const Utils = require('./utils');
 const Path = require('path');
 module.exports = async (options, packageJSON) => {
   if (!options.features.includes('stylelint')) return;
-  const cssResolvables = ['.css'];
+  const extensions = ['.css'];
   packageJSON.devDependencies['stylelint'] = 'latest';
   packageJSON.devDependencies['stylelint-config-rational-order'] = 'latest';
   packageJSON.devDependencies['stylelint-config-standard'] = 'latest';
@@ -24,7 +24,7 @@ module.exports = async (options, packageJSON) => {
     packageJSON.devDependencies['stylelint-config-recommended-scss'] = 'latest';
     config.plugins.push('stylelint-scss');
     config.extends.push('stylelint-config-recommended-scss');
-    cssResolvables.push('.scss');
+    extensions.push('.scss');
   }
   if (options.features.includes('prettier')) {
     packageJSON.devDependencies['stylelint-prettier'] = 'latest';
@@ -38,11 +38,8 @@ module.exports = async (options, packageJSON) => {
       },
     ];
   }
-  if (options.framework.startsWith('vue')) cssResolvables.push('.vue');
-  const cmd =
-    cssResolvables.length === 1
-      ? `stylelint "src/**/*${cssResolvables[0]}"`
-      : `stylelint "src/**/*{${cssResolvables.join(',')}}"`;
+  if (options.framework === 'vue') extensions.push('.vue');
+  const cmd = `stylelint "src/**/*${extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0]}"`;
   if (packageJSON.scripts.lint) packageJSON.scripts.lint += ' && ' + cmd;
   else packageJSON.scripts.lint = cmd;
   if (packageJSON.scripts['lint:fix']) packageJSON.scripts['lint:fix'] += ' && ' + cmd + ' --fix';

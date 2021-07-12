@@ -26,7 +26,7 @@ async function createProject(options) {
     for (const middleware of template.middlewares) t = await middleware(t, dest);
     return t;
   });
-  for (const name of ['prettier', 'eslint', 'stylelint', 'typescript', 'vite', 'features'])
+  for (const name of ['prettier', 'eslint', 'stylelint', 'jsconfig', 'bundling', 'features'])
     await require('./' + name)(options, packageJSON);
   await Utils.createPath(Path.join(options.directory, 'package.json'), Utils.prettyJSON(packageJSON));
   return packageJSON;
@@ -34,7 +34,7 @@ async function createProject(options) {
 const log = data => console.log(chalk.bold.bgBlueBright(data));
 module.exports = async function (options) {
   try {
-    log('🧬  Generating configuration of project...');
+    log('🧬  Generating configuration of a project...');
     let directory = process.cwd();
     if (options.newDirectory) {
       directory = Path.join(directory, options.name);
