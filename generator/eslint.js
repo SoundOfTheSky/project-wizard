@@ -25,7 +25,8 @@ module.exports = async (options, packageJSON) => {
     extensions.push('.jsx');
     eslintConfig.parserOptions.ecmaFeatures = { jsx: true };
   }
-  if (options.features.includes('typescript')) {
+  const typescript = options.features.includes('typescript');
+  if (typescript) {
     packageJSON.devDependencies['@typescript-eslint/parser'] = 'latest';
     packageJSON.devDependencies['@typescript-eslint/eslint-plugin'] = 'latest';
     eslintConfig.parser = '@typescript-eslint/parser';
@@ -46,6 +47,10 @@ module.exports = async (options, packageJSON) => {
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
     eslintConfig.parser = 'vue-eslint-parser';
     extensions.push('.vue');
+  }
+  if (options.environment === 'node' && !typescript) {
+    packageJSON.devDependencies['@babel/eslint-parser'] = 'latest';
+    eslintConfig.parser = '@babel/eslint-parser';
   }
   if (prettierEnabled) eslintConfig.extends.push('plugin:prettier/recommended');
   const cmd = `eslint "src/**/*${extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0]}"`;

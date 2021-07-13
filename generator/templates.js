@@ -94,11 +94,11 @@ function getTemplate(f) {
       }
       break;
     case 'node':
-      if (f.framework === 'nest')
+      if (f.framework === 'nest') {
         tree = {
           scripts: {
             'build.js': '!nest/scripts/build.js',
-            'copyStatic.js': '!nest/scripts/copyStatic.js',
+            'utils.js': '!nest/scripts/utils.js',
             'dev.js': '!nest/scripts/dev.js',
           },
           src: {
@@ -110,7 +110,6 @@ function getTemplate(f) {
             'app.controller.js': '!nest/app.controller.js',
             user: {
               'user.controller.js': '!nest/user/user.controller.js',
-              'user.dto.js': '!nest/user/user.dto.js',
               'user.guard.js': '!nest/user/user.guard.js',
               'user.module.js': '!nest/user/user.module.js',
               'user.service.js': '!nest/user/user.service.js',
@@ -121,6 +120,13 @@ function getTemplate(f) {
           },
           '.gitignore': '!gitignore',
         };
+        if (f.typescript) {
+          tree.src.user['user.dto.ts'] = '!nest/user/user.dto.ts';
+          tree.scripts['build.js'] = '!nest/scripts/build-ts.js';
+          tree.scripts['utils.js'] = '!nest/scripts/utils-ts.js';
+          tree.scripts['dev.js'] = '!nest/scripts/dev-ts.js';
+        }
+      }
       break;
   }
   if (f.typescript) {

@@ -77,11 +77,9 @@ module.exports = async (options, packageJSON) => {
       prefix + '\nexport default defineConfig(' + Utils.prettyJSON(config, true) + ');',
     );
   } else {
-    if (typescript) {
-      packageJSON.scripts.dev = 'node scripts/dev';
-      packageJSON.scripts.build = 'node scripts/build';
-      packageJSON.scripts.preview = 'node dist';
-    } else packageJSON.scripts.start = 'node src';
-    // TS Compiler bundling parameters are in jsconfig.js
+    packageJSON.scripts.dev = 'node scripts/dev';
+    packageJSON.scripts.build = 'node scripts/build';
+    packageJSON.scripts.preview = 'node dist';
+    if (!typescript) packageJSON.devDependencies['chokidar'] = 'latest';
   }
 };

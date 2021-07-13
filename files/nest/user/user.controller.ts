@@ -16,7 +16,7 @@ export class UserController {
       const token = this.UserService.login(data);
       response.cookie('authorization', token, { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }).send();
     } catch (e) {
-      response.status(400).send(e);
+      response.status(e.status).send(e.response);
     }
   }
   @Get('confirm')

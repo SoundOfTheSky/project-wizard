@@ -19,4 +19,6 @@ async function main() {
   }
   await r(STATIC_PATH, DIST_PATH);
 }
-module.exports = main;
+module.exports = {
+  copyStatic: main
+};

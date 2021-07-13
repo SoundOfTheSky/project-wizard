@@ -2,7 +2,7 @@
 const ts = require('typescript');
 const fs = require('fs/promises');
 const path = require('path');
-const copyStatic = require('./copyStatic');
+const { copyStatic } = require('./utils');
 const PACKAGE_PATH = path.join(__dirname, '../package.json');
 const DIST_PATH = path.join(__dirname, '../dist');
 const DIST_PACKAGE_PATH = path.join(DIST_PATH, 'package.json');

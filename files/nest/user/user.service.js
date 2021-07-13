@@ -36,7 +36,7 @@ export class UserService {
     this.list.push({ ...data, password: SHA256(data.password).toString(), role: 'unconfirmed' });
     return true;
   }
-  async sendMailAccountConfirmation(email) {
+  sendMailAccountConfirmation(email) {
     email = email.trim();
     if (
       typeof email !== 'string' ||
@@ -53,7 +53,7 @@ export class UserService {
       }),
     );
   }
-  async mailAccountConfirmation(token) {
+  mailAccountConfirmation(token) {
     try {
       if (!token) throw new BadRequestException('No token');
       const email = verify(token, secret).email;
@@ -64,7 +64,7 @@ export class UserService {
       throw new BadRequestException('Wrong token');
     }
   }
-  async login(data) {
+  login(data) {
     mutateObjectTrimStrings(data);
     if (typeof data.email !== 'string' && typeof data.login !== 'string')
       throw new BadRequestException('Needs either login or email to be passed');
@@ -85,7 +85,7 @@ export class UserService {
     if (!user) throw new BadRequestException('Not found');
     return this.generateAuthToken({ email: user.email, role: user.role });
   }
-  async changePassword(data) {
+  changePassword(data) {
     mutateObjectTrimStrings(data);
     if (typeof data.email !== 'string' && typeof data.login !== 'string')
       throw new BadRequestException('Needs either login or email to be passed');
