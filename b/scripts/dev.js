@@ -2,6 +2,7 @@
 const ts = require('typescript');
 const { spawn } = require('child_process');
 const path = require('path');
+const { copyStatic } = require('./utils');
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 const formatHost = {
   getCanonicalFileName: path => path,
@@ -47,6 +48,7 @@ function watch() {
     exitByScripts = false;
   });
   ts.createWatchProgram(host);
+  copyStatic();
 }
 
 watch();

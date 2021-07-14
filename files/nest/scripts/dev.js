@@ -8,22 +8,26 @@ const SRC_PATH = path.join(__dirname, '..', 'src');
 
 let nodeProcess;
 let exitByScripts;
-async function startDist() {
+let startTimeout;
+function startDist() {
+  clearTimeout(startTimeout);
   if (nodeProcess) {
     process.kill(nodeProcess.pid);
     exitByScripts = true;
     nodeProcess = null;
     await new Promise(r => setTimeout(r, 500));
   }
-  nodeProcess = spawn('node', [DIST_PATH]);
-  nodeProcess.on('exit', async code => {
-    if (exitByScripts) return;
-    console.log(`Backend exited with code ${code}`);
-    process.exit();
-  });
-  nodeProcess.stdout.pipe(process.stdout);
-  nodeProcess.stderr.pipe(process.stderr);
-  exitByScripts = false;
+  setTimeout(()=>{
+    nodeProcess = spawn('node', [DIST_PATH]);
+    nodeProcess.on('exit', async code => {
+      if (exitByScripts) return;
+      console.log(`Backend exited with code ${code}`);
+      process.exit();
+    });
+    nodeProcess.stdout.pipe(process.stdout);
+    nodeProcess.stderr.pipe(process.stderr);
+    exitByScripts = false;
+  },500);
 }
 async function watch() {
   console.log('Building project...');
@@ -31,7 +35,6 @@ async function watch() {
   await buildDir(SRC_PATH, DIST_PATH);
   console.log(`Builded! Build took ${Date.now() - start}ms`);
   startDist();
-  let restartTimeout;
   chokidar
     .watch(SRC_PATH, { ignoreInitial: true, ignored: path.join(SRC_PATH, 'static') })
     .on('all', async (event, path) => {
@@ -43,8 +46,7 @@ async function watch() {
       else if (event === 'addDir') await fs.mkdir(distPath);
       else await build(path, distPath);
       console.log(`Rebuilded! Build took ${Date.now() - start}ms`);
-      clearTimeout(restartTimeout);
-      restartTimeout = setTimeout(startDist, 500);
+      startDist();
     });
 }
 

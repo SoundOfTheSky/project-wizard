@@ -2,6 +2,7 @@
 const ts = require('typescript');
 const { spawn } = require('child_process');
 const path = require('path');
+const { copyStatic } = require('./utils');
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 const formatHost = {
   getCanonicalFileName: path => path,
@@ -28,25 +29,28 @@ function watch() {
   );
   let nodeProcess;
   let exitByScripts;
+  let startTimeout;
   on(host, 'afterProgramCreate', undefined, async () => {
+    clearTimeout(startTimeout);
     if (nodeProcess) {
       process.kill(nodeProcess.pid);
       exitByScripts = true;
       nodeProcess = null;
-      await new Promise(r => setTimeout(r, 500));
     }
-    nodeProcess = spawn('node', [DIST_PATH]);
-    nodeProcess.on('exit', async code => {
-      if (exitByScripts) return;
-      console.log(`Backend exited with code ${code}`);
-      //await onClose();
-      process.exit();
-    });
-    nodeProcess.stdout.pipe(process.stdout);
-    nodeProcess.stderr.pipe(process.stderr);
-    exitByScripts = false;
+    startTimeout = setTimeout(() => {
+      nodeProcess = spawn('node', [DIST_PATH]);
+      nodeProcess.on('exit', async code => {
+        if (exitByScripts) return;
+        console.log(`Backend exited with code ${code}`);
+        process.exit();
+      });
+      nodeProcess.stdout.pipe(process.stdout);
+      nodeProcess.stderr.pipe(process.stderr);
+      exitByScripts = false;
+    }, 500);
   });
   ts.createWatchProgram(host);
+  copyStatic();
 }
 
 watch();

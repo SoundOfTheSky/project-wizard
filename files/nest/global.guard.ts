@@ -36,7 +36,7 @@ export class GlobalGuard implements CanActivate {
       this.ips[ip].push(Date.now());
       if (this.ips[ip].length < this.minRequestsToEnableThrottling) r(true);
       else if (this.ips[ip].length > this.maxRequestsUntilError) r(false);
-      else setTimeout(() => r(true), (this.ips[ip].length - 60) * this.throttlingPenaltyForEachRequest);
+      else setTimeout(() => r(true), (this.ips[ip].length - this.minRequestsToEnableThrottling) * this.throttlingPenaltyForEachRequest);
     });
   }
 }

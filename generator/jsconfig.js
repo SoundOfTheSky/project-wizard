@@ -34,20 +34,21 @@ module.exports = async (options, packageJSON) => {
         skipLibCheck: true, // vite false
         // Allow import modules without *
         allowSyntheticDefaultImports: true,
+        // Maybe for better perfomance there TypeScript compiler used only as type checker (noEmit) we should use allowSyntheticDefaultImports intead esModuleInterop
+        // esModuleInterop: true,
         // Stronger type checking
         strict: true,
         // Force to use correct casing for file names
         forceConsistentCasingInFileNames: true,
         // Don't polyfill imports
         module: 'ESNext',
-        // IDK lol, config reference says that it's better
+        // IDK lol, config reference says that node is better
         moduleResolution: 'Node',
         // Import JSON as modules
         resolveJsonModule: true,
-        // Warn if you write something that vite can't build. I guess it's not needed then using typescript compiler...
+        // Warn if you write something that bundlers can't build.
+        // Removing if using TypeScript compiler
         isolatedModules: true,
-        // Don't reuse code, just add it from node_modules
-        importHelpers: true,
         // Remove comments on compile
         removeComments: true,
         // Always use return for returning from function
@@ -59,8 +60,6 @@ module.exports = async (options, packageJSON) => {
         emitDecoratorMetadata: true,
         // Don't emit files
         noEmit: true,
-        // ES6 decorators support
-        experimentalDecorators: true,
         // Alias for imports
         paths: getPaths(),
       },
@@ -77,11 +76,20 @@ module.exports = async (options, packageJSON) => {
       if (options.framework === 'react') tsconfig.compilerOptions.jsx = 'react-jsx';
       else if (options.framework === 'vue') tsconfig.compilerOptions.jsx = 'preserve';
     } else if (target === 'node') {
+      // If target is node, we are using TS Compiler
       // Transform imports to requires
       tsconfig.compilerOptions.module = 'CommonJS';
       // Enable ts compiler as bundler
       delete tsconfig.compilerOptions.noEmit;
+      // Don't reuse code, just add it from node_modules. Needs tslib in dependencies
+      packageJSON.dependencies['tslib'] = 'latest';
+      tsconfig.compilerOptions.importHelpers = true;
+      // No point in this if we are using TS Compiler
+      delete tsconfig.compilerOptions.isolatedModules;
       tsconfig.compilerOptions.outDir = './dist';
+      // Not only allow synthetic default imports, but polyfill them
+      delete tsconfig.compilerOptions.allowSyntheticDefaultImports;
+      tsconfig.compilerOptions.esModuleInterop = true;
       if (options.environment !== 'node') {
         // I don't remember why...
         delete tsconfig.compilerOptions.paths[Object.keys(tsconfig.compilerOptions.paths)[1]];
