@@ -94,37 +94,63 @@ function getTemplate(f) {
       }
       break;
     case 'node':
+      tree = {
+        scripts: {
+          'build.js': '!node/scripts/build.js',
+          'utils.js': '!node/scripts/utils.js',
+          'dev.js': '!node/scripts/dev.js',
+        },
+        '.gitignore': '!gitignore',
+      };
+      if (f.typescript) {
+        tree.scripts['build.js'] = '!node/scripts/build-ts.js';
+        tree.scripts['utils.js'] = '!node/scripts/utils-ts.js';
+        tree.scripts['dev.js'] = '!node/scripts/dev-ts.js';
+      }
       if (f.framework === 'nest') {
-        tree = {
-          scripts: {
-            'build.js': '!nest/scripts/build.js',
-            'utils.js': '!nest/scripts/utils.js',
-            'dev.js': '!nest/scripts/dev.js',
+        tree.src = {
+          'index.js': '!node/nest/index.js',
+          'global.guard.js': '!node/nest/global.guard.js',
+          'config.js': '!node/nest/config.js',
+          'app.service.js': '!node/nest/app.service.js',
+          'app.module.js': '!node/nest/app.module.js',
+          'app.controller.js': '!node/nest/app.controller.js',
+          user: {
+            'user.controller.js': '!node/nest/user/user.controller.js',
+            'user.guard.js': '!node/nest/user/user.guard.js',
+            'user.module.js': '!node/nest/user/user.module.js',
+            'user.service.js': '!node/nest/user/user.service.js',
           },
-          src: {
-            'index.js': '!nest/index.js',
-            'global.guard.js': '!nest/global.guard.js',
-            'config.js': '!nest/config.js',
-            'app.service.js': '!nest/app.service.js',
-            'app.module.js': '!nest/app.module.js',
-            'app.controller.js': '!nest/app.controller.js',
-            user: {
-              'user.controller.js': '!nest/user/user.controller.js',
-              'user.guard.js': '!nest/user/user.guard.js',
-              'user.module.js': '!nest/user/user.module.js',
-              'user.service.js': '!nest/user/user.service.js',
-            },
-            static: {
-              'index.html': '!nest/index.html',
-            },
+          static: {
+            'index.html': '!node/index.html',
           },
-          '.gitignore': '!gitignore',
+        };
+        if (f.typescript) tree.src.user['user.dto.ts'] = '!node/nest/user/user.dto.ts';
+      }
+      if (f.framework === 'express') {
+        tree.src = {
+          'index.js': '!node/express/index.js',
+          'config.js': '!node/express/config.js',
+          service: {
+            'user.js': '!node/express/service/user.js',
+          },
+          router: {
+            'index.js': '!node/express/router/index.js',
+            'user.js': '!node/express/router/user.js',
+          },
+          middlewares: {
+            'auth.js': '!node/express/middlewares/auth.js',
+            'throttling.js': '!node/express/middlewares/throttling.js',
+          },
+          static: {
+            'index.html': '!node/index.html',
+          },
         };
         if (f.typescript) {
-          tree.src.user['user.dto.ts'] = '!nest/user/user.dto.ts';
-          tree.scripts['build.js'] = '!nest/scripts/build-ts.js';
-          tree.scripts['utils.js'] = '!nest/scripts/utils-ts.js';
-          tree.scripts['dev.js'] = '!nest/scripts/dev-ts.js';
+          tree.src.dto = {
+            'user.ts': '!node/express/dto/user.ts',
+          };
+          tree.src['request.d.ts'] = '!node/express/request.d.ts';
         }
       }
       break;

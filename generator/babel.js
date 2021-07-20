@@ -8,6 +8,7 @@ module.exports = async (options, packageJSON) => {
   packageJSON.devDependencies['@babel/plugin-transform-runtime'] = 'latest';
   packageJSON.devDependencies['@babel/preset-env'] = 'latest';
   packageJSON.devDependencies['babel-plugin-parameter-decorator'] = 'latest';
+  packageJSON.devDependencies['babel-plugin-module-resolver'] = 'latest';
   packageJSON.dependencies['@babel/runtime'] = 'latest';
   return Utils.createPath(
     Path.join(options.directory, '.babelrc'),
@@ -17,6 +18,15 @@ module.exports = async (options, packageJSON) => {
         ['@babel/plugin-proposal-decorators', { legacy: true }],
         '@babel/plugin-transform-runtime',
         'babel-plugin-parameter-decorator',
+        [
+          'module-resolver',
+          {
+            root: ['.'],
+            alias: {
+              '@': './src',
+            },
+          },
+        ],
       ],
     }),
   );
