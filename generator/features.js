@@ -7,7 +7,7 @@ module.exports = async (options, packageJSON) => {
       packageJSON.devDependencies['@types/react'] = '16';
       packageJSON.devDependencies['@types/react-dom'] = '16';
     } else packageJSON.dependencies['prop-types'] = '15';
-  } else if (options.framework === 'vue') packageJSON.dependencies['vue'] = options.framework[3] === '3' ? '3' : '2';
+  } else if (options.framework === 'vue') packageJSON.dependencies['vue'] = '3';
   else if (options.framework === 'nest') {
     packageJSON.dependencies['@nestjs/common'] = 'latest';
     packageJSON.dependencies['@nestjs/core'] = 'latest';

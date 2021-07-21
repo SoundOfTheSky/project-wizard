@@ -18,7 +18,7 @@ function getTemplate(f) {
   const middlewares = [];
   let entry = '/src/index.js';
   switch (f.environment) {
-    case 'frontend':
+    case 'browser':
     case 'electron':
       middlewares.push((t, dest) => (dest.endsWith('index.html') ? t.replace('%entry%', entry) : t));
       if (f.framework === 'react') {

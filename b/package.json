@@ -1,0 +1,45 @@
+{
+  "name": "b",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "react": "16",
+    "react-dom": "16",
+    "react-redux": "7",
+    "redux": "4",
+    "@reduxjs/toolkit": "1",
+    "react-router-dom": "5"
+  },
+  "devDependencies": {
+    "prettier": "latest",
+    "eslint": "latest",
+    "eslint-plugin-prettier": "latest",
+    "eslint-config-prettier": "latest",
+    "@typescript-eslint/parser": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "eslint-plugin-react": "latest",
+    "stylelint": "latest",
+    "stylelint-config-rational-order": "latest",
+    "stylelint-config-standard": "latest",
+    "stylelint-order": "latest",
+    "stylelint-scss": "latest",
+    "stylelint-config-recommended-scss": "latest",
+    "stylelint-prettier": "latest",
+    "stylelint-config-prettier": "latest",
+    "typescript": "latest",
+    "vite": "^2",
+    "sass": "^1",
+    "@vitejs/plugin-react-refresh": "^1",
+    "@types/react": "16",
+    "@types/react-dom": "16",
+    "@types/react-redux": "7",
+    "@types/react-router-dom": "5"
+  },
+  "scripts": {
+    "lint": "prettier -c \"**/*{.js,.json,.jsx,.ts,.tsx}\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\" && stylelint \"src/**/*{.css,.scss}\"",
+    "lint:fix": "prettier -w \"**/*{.js,.json,.jsx,.ts,.tsx}\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\" --fix && stylelint \"src/**/*{.css,.scss}\" --fix",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  }
+}

@@ -28,7 +28,6 @@ async function create() {
       choices: [
         { name: '📰 Browser', value: 'browser' },
         { name: '🟢 Node.js', value: 'node' },
-        { name: '🔵 FullStack', value: 'fullstack' },
         { name: '💻 Electron', value: 'electron' },
       ],
     },
@@ -63,12 +62,12 @@ async function create() {
         { name: '5️⃣  ES2016', value: 'es2016' },
       ],
       default: ({ environment }) => (environment === 'electron' ? 'esnext' : 'modules'),
-      when: ({ environment }) => ['browser', 'fullstack'].includes(environment),
+      when: ({ environment }) => environment==='browser',
     },
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
+      message: 'Features:',
       pageSize: 8,
       choices: ({ environment }) =>
         [
@@ -86,7 +85,7 @@ async function create() {
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
+      message: 'Features:',
       pageSize: 8,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
@@ -103,7 +102,7 @@ async function create() {
     {
       name: 'frontendFeatures',
       type: 'checkbox',
-      message: ({ environment }) => (environment === 'fullstack' ? 'Frontend features:' : 'Features:'),
+      message: 'Features:',
       pageSize: 8,
       choices: [
         { name: '📘 TypeScript', value: 'typescript' },
@@ -125,7 +124,7 @@ async function create() {
         { name: '🔨 Express', value: 'express' },
         { name: '😸 Nest', value: 'nest' },
       ],
-      when: ({ environment }) => ['node', 'fullstack'].includes(environment),
+      when: ({ environment }) => environment==='node',
     },
     {
       name: 'backendFeatures',
@@ -137,13 +136,12 @@ async function create() {
         { name: '🎨 ESLint', value: 'eslint', checked: true },
         { name: '🎀 Prettier', value: 'prettier', checked: true },
       ],
-      when: ({ environment }) => ['node', 'fullstack'].includes(environment),
+      when: ({ environment }) => environment===='node',
     },
     {
       name: 'frontendPrettier',
       type: 'checkbox',
-      message: ({ environment }) =>
-        environment === 'fullstack' ? 'Frontend prettier configuration:' : 'Prettier configuration:',
+      message: 'Prettier configuration:',
       pageSize: 7,
       when: ({ frontendFeatures }) => frontendFeatures?.includes('prettier'),
       choices: [

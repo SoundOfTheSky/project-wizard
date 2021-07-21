@@ -25,16 +25,10 @@ module.exports = async (options, packageJSON) => {
       if (typescript) packageJSON.scripts.build = 'tsc && vite build';
     } else if (options.framework === 'vue') {
       if (!config.plugins) config.plugins = [];
-      if (options.framework[3] === '3') {
-        packageJSON.devDependencies['@vitejs/plugin-vue'] = '^1';
-        packageJSON.devDependencies['@vue/compiler-sfc'] = '^3';
-        prefix += `import vue from '@vitejs/plugin-vue';\n`;
-        config.plugins.push('!js:vue()');
-      } else {
-        packageJSON.devDependencies['vite-plugin-vue2'] = '^1';
-        prefix += `import { createVuePlugin } from 'vite-plugin-vue2';\n`;
-        config.plugins.push('!js:createVuePlugin({ jsx: true })');
-      }
+      packageJSON.devDependencies['@vitejs/plugin-vue'] = 'latest';
+      packageJSON.devDependencies['@vue/compiler-sfc'] = 'latest';
+      prefix += `import vue from '@vitejs/plugin-vue';\n`;
+      config.plugins.push('!js:vue()');
       if (typescript) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
     }
     if (options.environment === 'electron') {

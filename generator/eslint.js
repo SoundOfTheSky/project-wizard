@@ -43,7 +43,7 @@ module.exports = async (options, packageJSON) => {
   } else if (options.framework === 'vue') {
     packageJSON.devDependencies['vue-eslint-parser'] = 'latest';
     packageJSON.devDependencies['eslint-plugin-vue'] = 'latest';
-    eslintConfig.extends.unshift('plugin:vue/' + (options.framework[3] === '3' ? 'vue3-recommended' : 'recommended'));
+    eslintConfig.extends.unshift('plugin:vue/vue3-recommended');
     if (eslintConfig.parser) eslintConfig.parserOptions.parser = eslintConfig.parser;
     eslintConfig.parser = 'vue-eslint-parser';
     extensions.push('.vue');

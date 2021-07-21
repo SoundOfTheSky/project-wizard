@@ -9,12 +9,6 @@ module.exports = async (options, packageJSON) => {
         '@/renderer/*': ['src/renderer/*'],
         '@/common/*': ['src/common/*'],
       };
-    if (options.environment === 'fullstack')
-      return {
-        '@/backend/*': ['backend/src/*'],
-        '@/frontend/*': ['frontend/src/*'],
-        '@/common/*': ['common/*'],
-      };
     return {
       '@/*': ['src/*'],
     };
