@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "react": "16",
-    "react-dom": "16",
-    "react-redux": "7",
-    "redux": "4",
-    "@reduxjs/toolkit": "1",
-    "react-router-dom": "5"
+    "vue": "next",
+    "vuex": "next",
+    "vue-router": "next"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "latest",
+    "@vue/compiler-sfc": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vue-tsc": "latest",
     "prettier": "latest",
     "eslint": "latest",
     "eslint-plugin-prettier": "latest",
@@ -26,14 +28,7 @@
     "stylelint-config-recommended-scss": "latest",
     "stylelint-prettier": "latest",
     "stylelint-config-prettier": "latest",
-    "typescript": "latest",
-    "vite": "^2",
-    "sass": "^1",
-    "@vitejs/plugin-react-refresh": "^1",
-    "@types/react": "16",
-    "@types/react-dom": "16",
-    "@types/react-redux": "7",
-    "@types/react-router-dom": "5"
+    "sass": "^1"
   },
   "scripts": {
     "lint": "prettier -c \"**/*{.js,.json,.jsx,.ts,.tsx}\" && eslint \"src/**/*{.js,.jsx,.ts,.tsx}\" && stylelint \"src/**/*{.css,.scss}\"",

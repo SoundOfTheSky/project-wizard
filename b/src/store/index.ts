@@ -1,10 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit';
-import todos from './slices/todos';
-
-export const store = configureStore({
-  reducer: {
-    todos,
+import { createStore, useStore as baseUseStore } from 'vuex';
+import Todos from './todos';
+import type { State as TodosState } from './todos';
+export interface State {
+  Todos: TodosState;
+}
+const store = createStore<State>({
+  modules: {
+    Todos,
   },
 });
-export type RootState = ReturnType<typeof store.getState>;
 export default store;
+export function useStore(): typeof store {
+  return baseUseStore();
+}

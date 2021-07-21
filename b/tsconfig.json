@@ -3,7 +3,6 @@
     "baseUrl": ".",
     "target": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "allowJs": false,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -12,16 +11,13 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "removeComments": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "noEmit": true,
     "paths": {
       "@/*": ["src/*"]
     },
-    "jsx": "react-jsx"
+    "jsx": "preserve"
   },
   "exclude": ["node_modules", "dist"]
 }
