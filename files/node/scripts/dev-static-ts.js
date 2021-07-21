@@ -2,7 +2,7 @@
 const ts = require('typescript');
 const { spawn } = require('child_process');
 const path = require('path');
-const { resolvePathAliases, on } = require('./utils');
+const { copyStatic, resolvePathAliases, on } = require('./utils');
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 const SRC_PATH = path.join(__dirname, '..', 'src');
 const formatHost = {
@@ -46,6 +46,7 @@ function watch() {
     }, 500);
   });
   ts.createWatchProgram(host);
+  copyStatic();
 }
 
 watch();

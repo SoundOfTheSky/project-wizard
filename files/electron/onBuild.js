@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const electron = require('electron');
 const childProcess = require('child_process');
-const chalk = require('chalk');
 let electronProcess;
 let exitByScripts;
 module.exports = async function onBuild(path, onClose) {
@@ -14,7 +13,7 @@ module.exports = async function onBuild(path, onClose) {
   electronProcess = childProcess.spawn(electron, [path]);
   electronProcess.on('exit', async code => {
     if (exitByScripts) return;
-    console.log(chalk.gray(`Electron exited with code ${code}`));
+    console.log(`Electron exited with code ${code}`);
     await onClose();
     process.exit();
   });

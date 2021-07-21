@@ -100,6 +100,9 @@ function getTemplate(f) {
           'utils.js': '!node/scripts/utils.js',
           'dev.js': '!node/scripts/dev.js',
         },
+        src: {
+          'index.js': '!node/index.js',
+        },
         '.gitignore': '!gitignore',
       };
       if (f.typescript) {
@@ -108,6 +111,9 @@ function getTemplate(f) {
         tree.scripts['dev.js'] = '!node/scripts/dev-ts.js';
       }
       if (f.framework === 'nest') {
+        tree.scripts['build.js'] = tree.scripts['build.js'].replace('/build', '/build-static');
+        tree.scripts['utils.js'] = tree.scripts['utils.js'].replace('/utils', '/utils-static');
+        tree.scripts['dev.js'] = tree.scripts['dev.js'].replace('/dev', '/dev-static');
         tree.src = {
           'index.js': '!node/nest/index.js',
           'global.guard.js': '!node/nest/global.guard.js',

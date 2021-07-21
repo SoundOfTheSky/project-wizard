@@ -21,6 +21,7 @@ module.exports = async (options, packageJSON) => {
     if (typescript) {
       packageJSON.devDependencies['@types/cookie-parser'] = 'latest';
       packageJSON.devDependencies['@types/jsonwebtoken'] = 'latest';
+      packageJSON.devDependencies['@types/crypto-js'] = 'latest';
     }
   } else if (options.framework === 'express') {
     packageJSON.dependencies['cookie-parser'] = 'latest';
@@ -31,8 +32,10 @@ module.exports = async (options, packageJSON) => {
       packageJSON.devDependencies['@types/cookie-parser'] = 'latest';
       packageJSON.devDependencies['@types/jsonwebtoken'] = 'latest';
       packageJSON.devDependencies['@types/express'] = 'latest';
+      packageJSON.devDependencies['@types/crypto-js'] = 'latest';
     }
   }
+  if (options.environment === 'node' && typescript) packageJSON.devDependencies['@types/node'] = 'latest';
   if (options.features.includes('redux')) {
     if (options.framework === 'react') packageJSON.dependencies['react-redux'] = '7';
     packageJSON.dependencies['redux'] = '4';

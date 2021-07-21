@@ -8,7 +8,6 @@ router.post('/register', (req, res) => {
     UserService.create(req.body);
     res.send('ok');
   } catch (e) {
-    console.log(3);
     res.status(400).send(e.message);
   }
 });

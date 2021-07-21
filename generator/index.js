@@ -21,7 +21,6 @@ async function createProject(options) {
     router: options.features.includes('router'),
     redux: options.features.includes('redux'),
   });
-  console.log(template.tree);
   await Utils.createTree(options.directory, template.tree, filesDirectory, async (t, dest) => {
     for (const middleware of template.middlewares) t = await middleware(t, dest);
     return t;
@@ -50,7 +49,7 @@ module.exports = async function (options) {
       target: options[options.environment + 'Target'],
       prettier: options[envPrefix + 'Prettier'],
     });
-    log('📦  200,000 npm packages are ready, with million more well on the way...');
+    log('📦  200,000 packages are ready, with million more well on the way...');
     await Utils.execute('yarn', ['install'], { cwd: directory });
     const lintFix = packageJSON.scripts?.['lint:fix'];
     if (lintFix) await Utils.execute('yarn', ['lint:fix'], { cwd: directory });

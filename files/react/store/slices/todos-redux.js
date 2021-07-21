@@ -31,7 +31,6 @@ export const todosSlice = createSlice({
       })
       .addCase(getTodosAction.fulfilled, (state, action) => {
         state.status = 'idle';
-        console.log('ok');
         state.list = action.payload;
       });
   },

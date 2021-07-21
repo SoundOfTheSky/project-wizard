@@ -2,7 +2,7 @@
 const ts = require('typescript');
 const fs = require('fs/promises');
 const path = require('path');
-const { resolvePathAliases, on } = require('./utils');
+const { copyStatic, resolvePathAliases, on } = require('./utils');
 const PACKAGE_PATH = path.join(__dirname, '..', 'package.json');
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 const SRC_PATH = path.join(__dirname, '..', 'src');
@@ -46,6 +46,7 @@ async function compile() {
     start: 'node .',
   };
   await fs.writeFile(DIST_PACKAGE_PATH, JSON.stringify(package, undefined, 2));
+  await copyStatic();
   process.exit();
 }
 
