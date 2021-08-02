@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   extends: [
-    'plugin:react/recommended',
+    'plugin:vue/vue3-recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'plugin:prettier/recommended',
@@ -12,13 +12,14 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
+    parser: '@typescript-eslint/parser',
   },
   rules: {
     'prefer-const': 1,
     'prettier/prettier': 1,
     '@typescript-eslint/explicit-module-boundary-types': 0,
   },
-  parser: '@typescript-eslint/parser',
+  parser: 'vue-eslint-parser',
   settings: {
     react: {
       version: 'detect',

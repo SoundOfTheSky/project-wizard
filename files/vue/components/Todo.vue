@@ -1,0 +1,109 @@
+<template>
+  <div class="todo">
+    <div class="title">Example todo app</div>
+    <div class="add-todo">
+      <input v-model="addTodoName" placeholder="Add new task" />
+      <div class="btn" @click="addTask">Add task</div>
+    </div>
+    <div className="todos">
+      <TodoItem
+        v-for="todo of todoList"
+        :key="todo.id"
+        :todo="todo"
+        :remove-todo="removeTodo"
+        :toggle-todo="toggleTodo"
+      />
+    </div>
+  </div>
+</template>
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import { getTodos } from '@/api';
+import type { TodoItem as TodoItemType } from '@/api';
+import TodoItem from '@/components/TodoItem.vue';
+const addTodoName = ref('');
+const todoList = ref<TodoItemType[]>([]);
+function addTask() {
+  todoList.value.push({ id: Date.now(), title: addTodoName.value, completed: false });
+  addTodoName.value = '';
+}
+function removeTodo(todo: TodoItemType) {
+  const i = todoList.value.findIndex(el => el.id === todo.id);
+  if (i !== -1) todoList.value.splice(i, 1);
+}
+function toggleTodo(todo: TodoItemType) {
+  const i = todoList.value.findIndex(el => el.id === todo.id);
+  if (i !== -1) todoList.value[i].completed = !todoList.value[i].completed;
+}
+onMounted(async () => {
+  todoList.value = await getTodos();
+});
+</script>
+<style>
+.todo {
+  width: 480px;
+  margin: 0 auto;
+  padding: 24px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 16px;
+}
+.todo .title {
+  margin-bottom: 24px;
+  font-weight: bold;
+  font-size: 24px;
+}
+.todo .add-todo {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.todo .add-todo input {
+  width: 80%;
+  padding-left: 16px;
+  font-size: 24px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.todo .todo-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 32px;
+  margin-bottom: 8px;
+  padding: 0 16px;
+  overflow: hidden;
+  line-height: 32px;
+  background: #f2f2f2;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.todo .todo-item .remove-button {
+  position: absolute;
+  right: -32px;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  text-align: center;
+  background: red;
+  transition: 0.2s;
+}
+.todo .todo-item .remove-button:hover {
+  background: #ca0303;
+}
+.todo .todo-item:hover {
+  background: #d4d4d4;
+}
+.todo .todo-item:hover .remove-button {
+  right: 0;
+}
+.todo .todo-item.completed {
+  background: #cbffd2;
+}
+.todo .todo-item.completed:hover {
+  background: #b9e9bf;
+}
+</style>
