@@ -1,14 +1,26 @@
 {
   "name": "project-wizard",
+  "version": "0.0.1",
+  "author": "SoundOfTheSky",
+  "license": "MIT",
+  "description": "Automatically create and configure custom JS projects.",
+  "keywords": [
+    "CLI",
+    "Project",
+    "Wizard"
+  ],
+  "homepage": "https://github.com/SoundOfTheSky/project-wizard#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SoundOfTheSky/project-wizard.git"
+  },
   "bin": {
-    "project-wizard": "bin/project-wizard.js"
+    "project-wizard": "bin/project-wizard.js",
+    "pw": "bin/project-wizard.js"
   },
   "scripts": {
     "start": "node bin/project-wizard"
   },
-  "version": "1.0.0",
-  "author": "SoundOfTheSky",
-  "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",
     "execa": "^5.1.1",
