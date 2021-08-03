@@ -1,5 +1,4 @@
 # Project wizard 🧙🏻‍♂️
-![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)
 >Fast way to create projects of **any** kind.
 
 ![Preview](https://i.ibb.co/gSpy2g6/Project-wizard.gif)
