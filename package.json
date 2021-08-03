@@ -12,7 +12,8 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "execa": "^5.1.1",
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.0.0",
+    "jszip": "^3.7.0"
   },
   "devDependencies": {
     "eslint": "^7.28.0",

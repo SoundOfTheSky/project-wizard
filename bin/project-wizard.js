@@ -21,6 +21,16 @@ async function create() {
       ],
     },
     {
+      name: 'packageManager',
+      type: 'list',
+      message: 'Package manager:',
+      pageSize: 2,
+      choices: [
+        { name: '📦 npm', value: 'npm' },
+        { name: '🧶 yarn', value: 'yarn' },
+      ],
+    },
+    {
       name: 'environment',
       type: 'list',
       message: 'Select environment:',
@@ -35,7 +45,7 @@ async function create() {
       name: 'frontendFramework',
       type: 'list',
       message: 'UI framework:',
-      pageSize: 4,
+      pageSize: 3,
       choices: [
         { name: '❌ None', value: 'none' },
         { name: '💙 React', value: 'react' },

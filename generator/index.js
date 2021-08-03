@@ -34,12 +34,13 @@ async function createProject(options) {
 const log = data => console.log(chalk.bold.bgBlueBright(data));
 module.exports = async function (options) {
   try {
-    log('🧬  Generating configuration of a project...');
+    log('🧬  Generating structure of a project...');
     let directory = process.cwd();
     if (options.newDirectory) {
       directory = Path.join(directory, options.name);
       if (!(await Utils.pathExists(directory))) await Utils.createPath(directory);
     }
+    log('🔧  Creating configuration...');
     const envPrefix = ['browser', 'electron'].includes(options.environment) ? 'frontend' : 'backend';
     const packageJSON = await createProject({
       directory,
@@ -51,12 +52,21 @@ module.exports = async function (options) {
       prettier: options[envPrefix + 'Prettier'],
     });
     log('📦  200,000 packages are ready, with million more well on the way...');
-    await Utils.execute('yarn', ['install'], { cwd: directory });
+    await Utils.execute(options.packageManager, ['install'], { cwd: directory });
     const lintFix = packageJSON.scripts?.['lint:fix'];
-    if (lintFix) await Utils.execute('yarn', ['lint:fix'], { cwd: directory });
+    if (lintFix) {
+      log('🎀 Formatting...');
+      await Utils.execute(
+        options.packageManager,
+        [options.packageManager === 'npm' && 'run', 'lint:fix'].filter(Boolean),
+        { cwd: directory },
+      );
+    }
     //await Utils.execute('git', ['init'], { cwd: directory });
     log('🏁  Finish!');
-    await Utils.execute('yarn', ['dev'], { cwd: directory });
+    await Utils.execute(options.packageManager, [options.packageManager === 'npm' && 'run', 'dev'].filter(Boolean), {
+      cwd: directory,
+    });
   } catch (e) {
     console.error('ERROR', e);
   }

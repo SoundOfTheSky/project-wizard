@@ -21,7 +21,6 @@ async function createPath(path, data) {
   else await fs.mkdir(path);
 }
 async function copyPath(path, dest, middleware = t => t) {
-  console.log(path);
   const [stats, destStats] = await Promise.all([pathExists(path), pathExists(dest)]);
   if (stats.isDirectory()) {
     if (!destStats) await fs.mkdir(dest);
