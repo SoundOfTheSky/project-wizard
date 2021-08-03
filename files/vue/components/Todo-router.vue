@@ -17,22 +17,21 @@
     <router-link to="/about">About</router-link>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { onMounted, ref } from 'vue';
 import { getTodos } from '@/api';
-import type { TodoItem as TodoItemType } from '@/api';
 import TodoItem from '@/components/TodoItem.vue';
 const addTodoName = ref('');
-const todoList = ref<TodoItemType[]>([]);
+const todoList = ref([]);
 function addTask() {
   todoList.value.push({ id: Date.now(), title: addTodoName.value, completed: false });
   addTodoName.value = '';
 }
-function removeTodo(todo: TodoItemType) {
+function removeTodo(todo) {
   const i = todoList.value.findIndex(el => el.id === todo.id);
   if (i !== -1) todoList.value.splice(i, 1);
 }
-function toggleTodo(todo: TodoItemType) {
+function toggleTodo(todo) {
   const i = todoList.value.findIndex(el => el.id === todo.id);
   if (i !== -1) todoList.value[i].completed = !todoList.value[i].completed;
 }

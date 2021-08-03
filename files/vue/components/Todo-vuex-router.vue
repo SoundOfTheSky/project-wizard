@@ -11,9 +11,9 @@
     <router-link to="/about">About</router-link>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { computed, onMounted, ref } from 'vue';
-import { useStore } from '@/store';
+import { useStore } from 'vuex';
 import TodoItem from '@/components/TodoItem.vue';
 const store = useStore();
 const addTodoName = ref('');

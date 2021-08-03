@@ -62,7 +62,7 @@ async function create() {
         { name: '5️⃣  ES2016', value: 'es2016' },
       ],
       default: ({ environment }) => (environment === 'electron' ? 'esnext' : 'modules'),
-      when: ({ environment }) => environment==='browser',
+      when: ({ environment }) => environment === 'browser',
     },
     {
       name: 'frontendFeatures',
@@ -124,7 +124,7 @@ async function create() {
         { name: '🔨 Express', value: 'express' },
         { name: '😸 Nest', value: 'nest' },
       ],
-      when: ({ environment }) => environment==='node',
+      when: ({ environment }) => environment === 'node',
     },
     {
       name: 'backendFeatures',
@@ -136,7 +136,7 @@ async function create() {
         { name: '🎨 ESLint', value: 'eslint', checked: true },
         { name: '🎀 Prettier', value: 'prettier', checked: true },
       ],
-      when: ({ environment }) => environment===='node',
+      when: ({ environment }) => environment === 'node',
     },
     {
       name: 'frontendPrettier',

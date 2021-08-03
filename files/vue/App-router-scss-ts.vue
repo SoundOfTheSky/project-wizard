@@ -1,11 +1,8 @@
 <template>
   <div class="app">
-    <Todo />
+    <router-view />
   </div>
 </template>
-<script setup>
-import Todo from '@/components/Todo.vue';
-</script>
 <style lang="scss">
 *,
 *::after,

@@ -20,6 +20,7 @@ async function createProject(options) {
     typescript: options.features.includes('typescript'),
     router: options.features.includes('router'),
     redux: options.features.includes('redux'),
+    vuex: options.features.includes('vuex'),
   });
   await Utils.createTree(options.directory, template.tree, filesDirectory, async (t, dest) => {
     for (const middleware of template.middlewares) t = await middleware(t, dest);

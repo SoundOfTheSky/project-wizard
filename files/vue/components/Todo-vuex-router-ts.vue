@@ -8,11 +8,12 @@
     <div className="todos">
       <TodoItem v-for="todo of todoList" :key="todo.id" :todo="todo" />
     </div>
+    <router-link to="/about">About</router-link>
   </div>
 </template>
-<script setup>
+<script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '@/store';
 import TodoItem from '@/components/TodoItem.vue';
 const store = useStore();
 const addTodoName = ref('');

@@ -3,10 +3,10 @@
     <Todo />
   </div>
 </template>
-<script setup>
+<script lang="ts" setup>
 import Todo from '@/components/Todo.vue';
 </script>
-<style lang="scss">
+<style>
 *,
 *::after,
 *::before {
@@ -30,8 +30,8 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
-  &:hover {
-    background: #0299df;
-  }
+}
+.bth:hover {
+  background: #0299df;
 }
 </style>

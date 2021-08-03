@@ -9,11 +9,13 @@
     <div className="remove-button" @click="store.commit('Todos/remove', todo)">X</div>
   </div>
 </template>
-<script setup>
-import { useStore } from 'vuex';
+<script lang="ts" setup>
+import type { TodoItem } from '@/api';
+import { useStore } from '@/store';
+import type { PropType } from 'vue';
 defineProps({
   todo: {
-    type: Object,
+    type: Object as PropType<TodoItem>,
     required: true,
   },
 });

@@ -7,7 +7,7 @@ module.exports = async (options, packageJSON) => {
       packageJSON.devDependencies['@types/react'] = '16';
       packageJSON.devDependencies['@types/react-dom'] = '16';
     } else packageJSON.dependencies['prop-types'] = '15';
-  } else if (options.framework === 'vue') packageJSON.dependencies['vue'] = '3';
+  } else if (options.framework === 'vue') packageJSON.dependencies['vue'] = 'next';
   else if (options.framework === 'nest') {
     packageJSON.dependencies['@nestjs/common'] = 'latest';
     packageJSON.dependencies['@nestjs/core'] = 'latest';
@@ -46,7 +46,7 @@ module.exports = async (options, packageJSON) => {
     if (options.framework === 'react') {
       packageJSON.dependencies['react-router-dom'] = '5';
       if (typescript) packageJSON.devDependencies['@types/react-router-dom'] = '5';
-    } else if (options.framework === 'vue') packageJSON.dependencies['vue-router'] = '3';
+    } else if (options.framework === 'vue') packageJSON.dependencies['vue-router'] = 'next';
   }
-  if (options.features.includes('vuex')) packageJSON.dependencies['vuex'] = '3';
+  if (options.features.includes('vuex')) packageJSON.dependencies['vuex'] = 'next';
 };

@@ -6,23 +6,39 @@
       <div class="btn" @click="addTask">Add task</div>
     </div>
     <div className="todos">
-      <TodoItem v-for="todo of todoList" :key="todo.id" :todo="todo" />
+      <TodoItem
+        v-for="todo of todoList"
+        :key="todo.id"
+        :todo="todo"
+        :remove-todo="removeTodo"
+        :toggle-todo="toggleTodo"
+      />
     </div>
     <router-link to="/about">About</router-link>
   </div>
 </template>
-<script setup>
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import { getTodos } from '@/api';
+import type { TodoItem as TodoItemType } from '@/api';
 import TodoItem from '@/components/TodoItem.vue';
-const store = useStore();
 const addTodoName = ref('');
-const todoList = computed(() => store.state.Todos.list);
+const todoList = ref<TodoItemType[]>([]);
 function addTask() {
-  store.commit('Todos/add', { id: Date.now(), title: addTodoName.value, completed: false });
+  todoList.value.push({ id: Date.now(), title: addTodoName.value, completed: false });
   addTodoName.value = '';
 }
-onMounted(() => store.dispatch('Todos/load'));
+function removeTodo(todo: TodoItemType) {
+  const i = todoList.value.findIndex(el => el.id === todo.id);
+  if (i !== -1) todoList.value.splice(i, 1);
+}
+function toggleTodo(todo: TodoItemType) {
+  const i = todoList.value.findIndex(el => el.id === todo.id);
+  if (i !== -1) todoList.value[i].completed = !todoList.value[i].completed;
+}
+onMounted(async () => {
+  todoList.value = await getTodos();
+});
 </script>
 <style lang="scss">
 .todo {
@@ -92,4 +108,4 @@ onMounted(() => store.dispatch('Todos/load'));
   }
 }
 </style>
-  
+    

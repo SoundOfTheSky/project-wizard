@@ -4,20 +4,18 @@
     <div className="remove-button" @click="removeTodo(todo)">X</div>
   </div>
 </template>
-<script lang="ts" setup>
-import type { TodoItem } from '@/api';
-import type { PropType } from 'vue';
+<script setup>
 defineProps({
   todo: {
-    type: Object as PropType<TodoItem>,
+    type: Object,
     required: true,
   },
   toggleTodo: {
-    type: Function as PropType<(todo: TodoItem) => void>,
+    type: Function,
     required: true,
   },
   removeTodo: {
-    type: Function as PropType<(todo: TodoItem) => void>,
+    type: Function,
     required: true,
   },
 });

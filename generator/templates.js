@@ -57,6 +57,46 @@ function getTemplate(f) {
         }
         if (f.typescript) tree.src['custom.d.ts'] = '!react/custom.d.ts';
       }
+      if (f.framework === 'vue') {
+        tree.src = {
+          'index.js': '!vue/index.js',
+          'App.vue': '!vue/App.vue',
+          api: {
+            'index.js': '!react/api/index.js',
+          },
+          components: {
+            'Todo.vue': '!vue/components/Todo.vue',
+            'TodoItem.vue': '!vue/components/TodoItem.vue',
+          },
+        };
+        if (f.vuex) {
+          tree.src['index.js'] = tree.src['index.js'].replace('.js', '-vuex.js');
+          tree.src.components['Todo.vue'] = tree.src.components['Todo.vue'].replace('.vue', '-vuex.vue');
+          tree.src.components['TodoItem.vue'] = tree.src.components['TodoItem.vue'].replace('.vue', '-vuex.vue');
+          tree.src.store = {
+            'index.js': '!vue/store/index.js',
+            'todos.js': '!vue/store/todos.js',
+          };
+        }
+        if (f.router) {
+          tree.src['index.js'] = tree.src['index.js'].replace('.js', '-router.js');
+          tree.src['App.vue'] = tree.src['App.vue'].replace('.vue', '-router.vue');
+          tree.src.components['Todo.vue'] = tree.src.components['Todo.vue'].replace('.vue', '-router.vue');
+          tree.src.components['About.vue'] = '!vue/components/About.vue';
+          tree.src['router.js'] = '!vue/router.js';
+        }
+        if (f.scss) {
+          tree.src['App.vue'] = tree.src['App.vue'].replace('.vue', '-scss.vue');
+          tree.src.components['Todo.vue'] = tree.src.components['Todo.vue'].replace('.vue', '-scss.vue');
+          tree.src.components['TodoItem.vue'] = tree.src.components['TodoItem.vue'].replace('.vue', '-scss.vue');
+          tree.src.components['About.vue'] = tree.src.components['About.vue'].replace('.vue', '-scss.vue');
+        }
+        if (f.typescript) {
+          tree.src['shims-vue.d.ts'] = '!vue/shims-vue.d.ts';
+          tree.src['vite-env.d.ts'] = '!vue/vite-env.d.ts';
+          tree.src['vue.d.ts'] = '!vue/vue.d.ts';
+        }
+      }
       if (f.environment === 'electron') {
         entry = entry.replace('/src', '');
         tree.public['icon-linux.png'] = '!electron/icon-linux.png';
@@ -169,7 +209,7 @@ function getTemplate(f) {
         else if (k.includes('.js')) {
           t[k.replace('.js', '.ts')] = t[k].replace('.js', '.ts');
           delete t[k];
-        }
+        } else if (k.endsWith('.vue')) t[k] = t[k].replace('.vue', '-ts.vue');
       });
     };
     r(tree.src);
