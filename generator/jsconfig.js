@@ -20,9 +20,9 @@ module.exports = async (options, packageJSON) => {
         baseUrl: '.',
         // JS specification of output files
         target: 'ESNext',
-        // Additional type difinitions for latest features
+        // Additional type definitions for latest features
         lib: ['ESNext'],
-        // Dont check all node_modules for types
+        // Don't check all node_modules for types
         skipLibCheck: true, // vite false
         // Allow import modules without *
         allowSyntheticDefaultImports: true,

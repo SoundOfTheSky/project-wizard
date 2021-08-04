@@ -31,6 +31,10 @@ module.exports = async (options, packageJSON) => {
       config.plugins.push('!js:vue()');
       if (typescript) packageJSON.scripts.build = 'vue-tsc --noEmit && vite build';
     }
+    if (options.target !== 'modules') {
+      if (!config.build) config.build = {};
+      config.build.target = options.target;
+    }
     if (options.environment === 'electron') {
       if (!config.plugins) config.plugins = [];
       config.plugins.push({
@@ -41,10 +45,6 @@ module.exports = async (options, packageJSON) => {
       if (!config.build) config.build = {};
       config.build.outDir = '../../dist';
       delete config.server;
-    }
-    if (options.target !== 'modules') {
-      if (!config.build) config.build = {};
-      config.build.target = options.target;
       config.resolve.alias = [
         {
           find: '@/renderer',

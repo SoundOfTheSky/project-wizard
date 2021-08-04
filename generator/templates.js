@@ -151,9 +151,9 @@ function getTemplate(f) {
         tree.scripts['dev.js'] = '!node/scripts/dev-ts.js';
       }
       if (f.framework === 'nest') {
-        tree.scripts['build.js'] = tree.scripts['build.js'].replace('/build', '/build-static');
-        tree.scripts['utils.js'] = tree.scripts['utils.js'].replace('/utils', '/utils-static');
-        tree.scripts['dev.js'] = tree.scripts['dev.js'].replace('/dev', '/dev-static');
+        tree.scripts['build.js'] = tree.scripts['build.js'].replace('/build-ts', '/build-static-ts');
+        tree.scripts['utils.js'] = tree.scripts['utils.js'].replace('/utils-ts', '/utils-static-ts');
+        tree.scripts['dev.js'] = tree.scripts['dev.js'].replace('/dev-ts', '/dev-static-ts');
         tree.src = {
           'index.js': '!node/nest/index.js',
           'global.guard.js': '!node/nest/global.guard.js',

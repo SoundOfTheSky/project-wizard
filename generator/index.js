@@ -51,22 +51,26 @@ module.exports = async function (options) {
       target: options[options.environment + 'Target'],
       prettier: options[envPrefix + 'Prettier'],
     });
-    log('📦  200,000 packages are ready, with million more well on the way...');
-    await Utils.execute(options.packageManager, ['install'], { cwd: directory });
-    const lintFix = packageJSON.scripts?.['lint:fix'];
-    if (lintFix) {
-      log('🎀 Formatting...');
-      await Utils.execute(
-        options.packageManager,
-        [options.packageManager === 'npm' && 'run', 'lint:fix'].filter(Boolean),
-        { cwd: directory },
-      );
+    if (options.packageManager === 'yarn') await Utils.createPath(Path.join(directory, 'yarn.lock'), '');
+    if (!options.dontInstall) {
+      log('📦  200,000 packages are ready, with million more well on the way...');
+      await Utils.execute(options.packageManager, ['install'], { cwd: directory });
+      const lintFix = packageJSON.scripts?.['lint:fix'];
+      if (lintFix) {
+        log('🎀 Formatting...');
+        await Utils.execute(
+          options.packageManager,
+          [options.packageManager === 'npm' && 'run', 'lint:fix'].filter(Boolean),
+          { cwd: directory },
+        );
+      }
     }
     //await Utils.execute('git', ['init'], { cwd: directory });
     log('🏁  Finish!');
-    await Utils.execute(options.packageManager, [options.packageManager === 'npm' && 'run', 'dev'].filter(Boolean), {
-      cwd: directory,
-    });
+    if (!options.dontInstall && !options.dontRun)
+      await Utils.execute(options.packageManager, [options.packageManager === 'npm' && 'run', 'dev'].filter(Boolean), {
+        cwd: directory,
+      });
   } catch (e) {
     console.error('ERROR', e);
   }

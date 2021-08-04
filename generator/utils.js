@@ -17,11 +17,12 @@ async function pathExists(path) {
 }
 async function createPath(path, data) {
   if (await pathExists(path)) await removePath(path);
-  if (data) await fs.writeFile(path, data, 'utf8');
+  if (data !== undefined) await fs.writeFile(path, data, 'utf8');
   else await fs.mkdir(path);
 }
 async function copyPath(path, dest, middleware = t => t) {
   const [stats, destStats] = await Promise.all([pathExists(path), pathExists(dest)]);
+  if (!stats) console.log('❌ ' + path);
   if (stats.isDirectory()) {
     if (!destStats) await fs.mkdir(dest);
     await Promise.all((await fs.readdir(path)).map(file => copyPath(Path.join(path, file), Path.join(dest, file))));
