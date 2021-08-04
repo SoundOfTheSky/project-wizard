@@ -1,6 +1,6 @@
 {
   "name": "project-wizard",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "SoundOfTheSky",
   "license": "MIT",
   "description": "Automatically create and configure custom JS projects.",
@@ -18,7 +18,7 @@
     "project-wizard": "bin/project-wizard.js",
     "pw": "bin/project-wizard.js"
   },
-  "files": ["bin/*/**", "files/*/**", "generator/*/**"],
+  "files": ["bin/*", "files/*", "generator/*"],
   "scripts": {
     "start": "node bin/project-wizard",
     "test": "node test"
