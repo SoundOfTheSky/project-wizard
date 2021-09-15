@@ -1,6 +1,6 @@
 {
   "name": "project-wizard",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "author": "SoundOfTheSky",
   "license": "MIT",
   "description": "Automatically create and configure custom JS projects.",
@@ -18,7 +18,11 @@
     "project-wizard": "bin/project-wizard.js",
     "pw": "bin/project-wizard.js"
   },
-  "files": ["bin/*", "files/*", "generator/*"],
+  "files": [
+    "bin/*",
+    "files/*",
+    "generator/*"
+  ],
   "scripts": {
     "start": "node bin/project-wizard",
     "test": "node test"
@@ -31,7 +35,7 @@
   "devDependencies": {
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.3.1"
   }
 }

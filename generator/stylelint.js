@@ -17,6 +17,19 @@ module.exports = async (options, packageJSON) => {
           severity: 'warning',
         },
       ],
+      'prettier/prettier': [
+        true,
+        {
+          severity: 'warning',
+        },
+      ],
+      'selector-pseudo-class-no-unknown': [
+        true,
+        {
+          ignorePseudoClasses: ['global'],
+        },
+      ],
+      'no-descending-specificity': null,
     },
   };
   if (options.features.includes('sass')) {
