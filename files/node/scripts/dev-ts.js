@@ -13,7 +13,7 @@ const formatHost = {
 
 function watch() {
   const host = ts.createWatchCompilerHost(
-    ts.findConfigFile('../', ts.sys.fileExists, 'tsconfig.json'),
+    ts.findConfigFile(path.join(__dirname, '..'), ts.sys.fileExists, 'tsconfig.json'),
     {},
     ts.sys,
     ts.createEmitAndSemanticDiagnosticsBuilderProgram,

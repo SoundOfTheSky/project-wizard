@@ -5,7 +5,7 @@ module.exports = async (options, packageJSON) => {
   if (['browser', 'electron'].includes(options.environment)) {
     packageJSON.scripts.dev = 'vite';
     packageJSON.scripts.build = 'vite build';
-    packageJSON.scripts.preview = 'vite preview';
+    packageJSON.scripts.start = 'vite preview';
     let prefix = `import path from 'path';\nimport { defineConfig } from 'vite';\n`;
     const config = {
       resolve: {
@@ -61,7 +61,7 @@ module.exports = async (options, packageJSON) => {
       packageJSON.scripts['compile:linux'] = 'node scripts/build -l';
       packageJSON.scripts['compile:mac'] = 'node scripts/build -m';
       packageJSON.scripts['compile:windows'] = 'node scripts/build -w';
-      packageJSON.scripts.preview = 'electron dist';
+      packageJSON.scripts.start = 'electron dist';
       packageJSON.devDependencies['esbuild'] = 'latest';
       packageJSON.devDependencies['electron'] = 'latest';
       packageJSON.devDependencies['electron-builder'] = 'latest';
@@ -73,7 +73,7 @@ module.exports = async (options, packageJSON) => {
   } else {
     packageJSON.scripts.dev = 'node scripts/dev';
     packageJSON.scripts.build = 'node scripts/build';
-    packageJSON.scripts.preview = 'node dist';
+    packageJSON.scripts.start = 'node dist';
     if (!typescript) packageJSON.devDependencies['chokidar'] = 'latest';
   }
 };

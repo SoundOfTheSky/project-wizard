@@ -4,10 +4,7 @@ const importRE = /import .*@\//;
 function resolvePathAliases(root, filePath, t) {
   let el;
   while ((el = importRE.exec(t)) !== null)
-    t = t.replace(
-      el[0],
-      el[0].slice(0, -2) + path.relative(filePath.slice(0, filePath.lastIndexOf('/')), root).replace(/\\/g, '/') + '/',
-    );
+    t = t.replace(el[0], el[0].slice(0, -2) + (path.relative(filePath.slice(0, filePath.lastIndexOf('/')), root).replace(/\\/g, '/') || '.') + '/');
   return t;
 }
 function on(host, functionName, before, after) {

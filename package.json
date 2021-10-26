@@ -28,14 +28,14 @@
     "test": "node test"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
-    "execa": "^5.1.1",
-    "inquirer": "^8.0.0"
+    "chalk": "latest",
+    "execa": "latest",
+    "inquirer": "latest"
   },
   "devDependencies": {
-    "eslint": "^7.28.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.3.1"
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-prettier": "latest",
+    "prettier": "latest"
   }
 }
