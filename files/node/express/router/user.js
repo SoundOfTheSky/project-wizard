@@ -7,7 +7,7 @@ router.post('/register', (req, res) => {
     UserService.create(req.body);
     res.send('ok');
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e?.message);
   }
 });
 router.post('/login', (req, res) => {
@@ -15,7 +15,7 @@ router.post('/login', (req, res) => {
     const token = UserService.login(req.body);
     res.cookie('authorization', token, { maxAge: 1000 * 60 * 60 * 24 * 14, httpOnly: true }).send('ok');
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e?.message);
   }
 });
 router.get('/confirm', (req, res) => {
@@ -23,7 +23,7 @@ router.get('/confirm', (req, res) => {
     UserService.mailAccountConfirmation(req.query.token);
     res.send('ok');
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e?.message);
   }
 });
 router.get('/send-confirmation', (req, res) => {
@@ -31,7 +31,7 @@ router.get('/send-confirmation', (req, res) => {
     UserService.sendMailAccountConfirmation(req.query.email);
     res.send('ok');
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e?.message);
   }
 });
 router.post('/change-password', (req, res) => {
@@ -39,7 +39,7 @@ router.post('/change-password', (req, res) => {
     UserService.changePassword(req.body);
     res.send('ok');
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e?.message);
   }
 });
 router.get('/', Auth);
