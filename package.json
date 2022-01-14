@@ -1,6 +1,6 @@
 {
   "name": "project-wizard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "SoundOfTheSky",
   "license": "MIT",
   "description": "Automatically create and configure custom JS projects.",
@@ -28,9 +28,9 @@
     "test": "node test"
   },
   "dependencies": {
-    "chalk": "latest",
-    "execa": "latest",
-    "inquirer": "latest"
+    "chalk": "4",
+    "execa": "5",
+    "inquirer": "8"
   },
   "devDependencies": {
     "eslint": "latest",
